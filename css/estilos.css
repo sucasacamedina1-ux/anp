@@ -1,0 +1,139 @@
+/* Estilos básicos y funcionales */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f4f4f4;
+  color: #222;
+}
+
+header {
+  background: #2c3e50;
+  color: #fff;
+  padding: 10px 20px;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 20px;
+}
+
+header p {
+  margin: 2px 0;
+  font-size: 13px;
+}
+
+nav {
+  background: #34495e;
+  padding: 8px 20px;
+}
+
+nav button {
+  background: #1abc9c;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  margin-right: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+nav button:hover {
+  background: #16a085;
+}
+
+main {
+  padding: 20px;
+}
+
+section {
+  background: #fff;
+  padding: 15px;
+  border: 1px solid #ccc;
+}
+
+h2 {
+  margin-top: 0;
+  font-size: 18px;
+}
+
+h3 {
+  font-size: 15px;
+  margin-top: 15px;
+  margin-bottom: 5px;
+}
+
+h4 {
+  font-size: 13px;
+  margin-top: 10px;
+  margin-bottom: 4px;
+}
+
+table {
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+table th,
+table td {
+  border: 1px solid #999;
+  padding: 4px 6px;
+  font-size: 13px;
+  min-width: 70px;
+}
+
+table th {
+  background: #ecf0f1;
+}
+
+table td input {
+  border: none;
+  width: 100%;
+  font-size: 13px;
+  background: transparent;
+}
+
+.botones-tabla {
+  margin-top: 10px;
+}
+
+.botones-tabla button {
+  background: #3498db;
+  color: #fff;
+  border: none;
+  padding: 6px 10px;
+  margin-right: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.botones-tabla button:hover {
+  background: #2980b9;
+}
+
+label {
+  font-size: 13px;
+  margin-right: 10px;
+}
+
+select {
+  font-size: 13px;
+  padding: 2px;
+}
+
+button {
+  font-size: 13px;
+  padding: 5px 10px;
+  margin: 2px 0;
+  cursor: pointer;
+}
+
+svg {
+  display: block;
+  margin-top: 10px;
+}
