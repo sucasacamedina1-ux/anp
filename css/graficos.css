@@ -1,0 +1,848 @@
+/* ==========================================================================
+   P5 · Pilar — Gráficos SVG (prefijo .graf-)
+   Usa las variables de css/variables.css con valores de respaldo.
+   Los colores de las series (barras, puntos, clusters) los pone graficos.js
+   leyendo --graf-azul, --graf-purpura, --graf-esmeralda y --graf-coral.
+   ========================================================================== */
+
+/* ==========================================================================
+   SECCIÓN GRÁFICOS: selector de tipo, formulario y estado vacío
+   ========================================================================== */
+
+.graf-intro {
+  max-width: 70ch;
+  margin: 0 0 16px;
+  color: var(--color-texto-suave, #64748b);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* --- Selector (pestañas con miniatura) --- */
+.graf-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.graf-opcion {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  padding: 12px;
+  background: var(--color-superficie, #ffffff);
+  border: 1px solid var(--color-borde, #e2e8f0);
+  border-radius: var(--radio, 8px);
+  box-shadow: var(--sombra-sm, 0 1px 2px rgba(15, 23, 42, 0.06));
+  color: var(--color-texto, #1e293b);
+  font-family: var(--fuente, 'Inter'), Arial, sans-serif;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+}
+
+.graf-opcion:hover {
+  border-color: var(--color-primario, #0f766e);
+}
+
+.graf-opcion:focus-visible {
+  outline: 2px solid var(--color-primario, #0f766e);
+  outline-offset: 2px;
+}
+
+/* Activa: borde de color, fondo suave e indicador inferior (no depende solo del color) */
+.graf-opcion[aria-selected="true"] {
+  background: var(--color-fondo, #f0fdfa);
+  border-color: var(--color-primario, #0f766e);
+  box-shadow: inset 0 -3px 0 var(--color-primario, #0f766e), var(--sombra-sm, 0 1px 2px rgba(15, 23, 42, 0.06));
+}
+
+.graf-opcion-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.graf-opcion-texto strong {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.graf-opcion-texto span {
+  color: var(--color-texto-suave, #64748b);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+/* --- Miniaturas SVG (colores de la paleta de gráficos) --- */
+.graf-miniatura {
+  display: block;
+  width: 48px;
+  height: 32px;
+  margin: 0;
+  overflow: visible;
+}
+
+.graf-mini-base,
+.graf-mini-linea {
+  fill: none;
+  stroke: var(--color-texto-suave, #64748b);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+.graf-mini-base {
+  stroke-opacity: 0.5;
+}
+
+.graf-mini-a { fill: var(--graf-azul, #3b82f6); }
+.graf-mini-b { fill: var(--graf-purpura, #8b5cf6); }
+.graf-mini-c { fill: var(--graf-esmeralda, #10b981); }
+.graf-mini-d { fill: var(--graf-coral, #f43f5e); }
+
+.graf-mini-caja {
+  fill: var(--graf-azul, #3b82f6);
+  fill-opacity: 0.2;
+  stroke: var(--graf-azul, #3b82f6);
+  stroke-width: 1.5;
+}
+
+.graf-mini-mediana {
+  stroke: var(--color-texto, #1e293b);
+  stroke-width: 2;
+}
+
+.graf-mini-hueco {
+  fill: var(--color-superficie, #ffffff);
+  stroke: var(--graf-coral, #f43f5e);
+  stroke-width: 1.5;
+}
+
+.graf-mini-recta {
+  stroke: var(--graf-coral, #f43f5e);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.graf-mini-zona-a,
+.graf-mini-zona-b {
+  fill-opacity: 0.12;
+  stroke-width: 1.2;
+  stroke-dasharray: 3 2;
+}
+
+.graf-mini-zona-a { fill: var(--graf-azul, #3b82f6); stroke: var(--graf-azul, #3b82f6); }
+.graf-mini-zona-b { fill: var(--graf-purpura, #8b5cf6); stroke: var(--graf-purpura, #8b5cf6); }
+
+/* --- Panel del tipo elegido --- */
+.graf-panel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px;
+  background: var(--color-superficie, #ffffff);
+  border: 1px solid var(--color-borde, #e2e8f0);
+  border-radius: var(--radio, 8px);
+  box-shadow: var(--sombra-sm, 0 1px 2px rgba(15, 23, 42, 0.06));
+}
+
+.graf-panel[hidden] {
+  display: none;
+}
+
+.graf-campos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 16px;
+  flex: 1 1 420px;
+}
+
+.graf-panel .graf-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1 1 200px;
+  max-width: 280px;
+  margin: 0;
+}
+
+.graf-panel .graf-campo--corto {
+  flex: 0 1 140px;
+}
+
+.graf-campo-etiqueta {
+  color: var(--color-texto, #1e293b);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* Select con flecha propia dibujada con CSS (sin imágenes ni colores fijos) */
+.graf-campo-select {
+  position: relative;
+  display: block;
+}
+
+.graf-campo-select::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid var(--color-texto-suave, #64748b);
+  border-bottom: 2px solid var(--color-texto-suave, #64748b);
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none;
+}
+
+.graf-panel .graf-campo select,
+.graf-panel .graf-campo input[type="number"] {
+  width: 100%;
+  margin: 0;
+  padding: 9px 12px;
+  background: var(--color-superficie, #ffffff);
+  border: 1px solid var(--color-borde, #e2e8f0);
+  border-radius: var(--radio, 8px);
+  color: var(--color-texto, #1e293b);
+  font-family: var(--fuente, 'Inter'), Arial, sans-serif;
+  font-size: 14px;
+  transition: border-color 150ms ease;
+}
+
+.graf-panel .graf-campo select {
+  padding-right: 36px;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.graf-panel .graf-campo select:focus-visible,
+.graf-panel .graf-campo input[type="number"]:focus-visible {
+  outline: 2px solid var(--color-primario, #0f766e);
+  outline-offset: 1px;
+  border-color: var(--color-primario, #0f766e);
+}
+
+.graf-panel .graf-casilla {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 9px 0;
+  color: var(--color-texto, #1e293b);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.graf-casilla input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--color-primario, #0f766e);
+}
+
+/* Botón principal de la sección */
+.graf-panel .graf-generar {
+  margin: 0;
+  padding: 10px 18px;
+  background: var(--color-primario, #0f766e);
+  border: 1px solid var(--color-primario, #0f766e);
+  border-radius: var(--radio, 8px);
+  color: var(--color-superficie, #ffffff);
+  font-family: var(--fuente, 'Inter'), Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.graf-panel .graf-generar:hover {
+  background: var(--color-primario-oscuro, #115e59);
+  border-color: var(--color-primario-oscuro, #115e59);
+}
+
+.graf-panel .graf-generar:focus-visible {
+  outline: 2px solid var(--color-primario, #0f766e);
+  outline-offset: 2px;
+}
+
+.graf-panel .graf-generar--secundario {
+  background: var(--color-superficie, #ffffff);
+  color: var(--color-primario, #0f766e);
+}
+
+.graf-panel .graf-generar--secundario:hover {
+  background: var(--color-fondo, #f0fdfa);
+  color: var(--color-primario-oscuro, #115e59);
+}
+
+.graf-nota {
+  flex: 1 1 360px;
+  margin: 0;
+  color: var(--color-texto-suave, #64748b);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* --- Estado vacío / vista previa --- */
+.graf-vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+  padding: 32px 16px;
+  border: 1px dashed var(--color-borde, #e2e8f0);
+  border-radius: var(--radio, 8px);
+  background: var(--color-fondo, #f8fafc);
+  text-align: center;
+}
+
+.graf-vacio-icono .graf-miniatura {
+  width: 120px;
+  height: 80px;
+  margin-bottom: 8px;
+  opacity: 0.85;
+}
+
+.graf-vacio-titulo {
+  margin: 0;
+  color: var(--color-texto, #1e293b);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.graf-vacio-texto {
+  margin: 0;
+  color: var(--color-texto-suave, #64748b);
+  font-size: 13px;
+}
+
+/* --- Tarjeta contenedora del gráfico --- */
+.graf-tarjeta {
+  background: var(--color-superficie, #ffffff);
+  border: 1px solid var(--color-borde, #e2e8f0);
+  border-radius: var(--radio, 8px);
+  box-shadow: var(--sombra-sm, 0 1px 2px rgba(15, 23, 42, 0.06));
+  padding: 16px;
+  margin: 16px 0;
+  max-width: 920px;
+  position: relative;
+}
+
+/* --- Encabezado: título y menú de descarga --- */
+.graf-encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.graf-tarjeta .graf-encabezado-titulo {
+  margin: 0;
+  min-width: 0;
+  color: var(--color-texto, #1e293b);
+  font-family: var(--fuente, 'Inter'), Arial, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.graf-descarga {
+  position: relative;
+  flex: 0 0 auto;
+  margin-left: auto; /* a la derecha aunque pase a otra línea */
+}
+
+.graf-tarjeta .graf-boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 7px 10px 7px 12px;
+  background: var(--color-superficie, #ffffff);
+  border: 1px solid var(--color-borde, #e2e8f0);
+  border-radius: var(--radio, 8px);
+  color: var(--color-texto, #1e293b);
+  font-family: var(--fuente, 'Inter'), Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.graf-tarjeta .graf-boton:hover,
+.graf-tarjeta .graf-boton[aria-expanded="true"] {
+  background: var(--color-fondo, #f8fafc);
+  border-color: var(--color-primario, #0f766e);
+}
+
+.graf-tarjeta .graf-boton:focus-visible,
+.graf-menu-item:focus-visible {
+  outline: 2px solid var(--color-primario, #0f766e);
+  outline-offset: 2px;
+}
+
+.graf-tarjeta .graf-icono {
+  display: block;
+  margin: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.graf-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 10;
+  min-width: 220px;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  background: var(--color-superficie, #ffffff);
+  border: 1px solid var(--color-borde, #e2e8f0);
+  border-radius: var(--radio, 8px);
+  box-shadow: var(--sombra-md, 0 4px 12px rgba(15, 23, 42, 0.12));
+}
+
+.graf-menu[hidden] {
+  display: none;
+}
+
+.graf-menu-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  width: 100%;
+  margin: 0;
+  padding: 8px 10px;
+  background: transparent;
+  border: 0;
+  border-radius: calc(var(--radio, 8px) - 2px);
+  color: var(--color-texto, #1e293b);
+  font-family: var(--fuente, 'Inter'), Arial, sans-serif;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.graf-menu-item span {
+  color: var(--color-texto-suave, #64748b);
+  font-size: 12px;
+}
+
+.graf-menu-item:hover,
+.graf-menu-item:focus {
+  background: var(--color-fondo, #f8fafc);
+}
+
+.graf-cuerpo {
+  width: 100%;
+}
+
+/* Con leyenda: gráfico a la izquierda y leyenda en una columna lateral */
+.graf-cuerpo--con-leyenda {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 168px;
+  gap: 16px;
+  align-items: start;
+}
+
+.graf-lienzo {
+  position: relative;
+  min-width: 0;
+}
+
+/* --- SVG adaptable: el viewBox escala el dibujo al ancho disponible --- */
+.graf-tarjeta .graf-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  border-radius: calc(var(--radio, 8px) - 2px);
+}
+
+.graf-tarjeta .graf-svg:focus {
+  outline: none;
+}
+
+.graf-tarjeta .graf-svg:focus-visible {
+  outline: 2px solid var(--color-primario, #0f766e);
+  outline-offset: 2px;
+}
+
+/* --- Textos --- */
+.graf-texto {
+  font-family: var(--fuente, 'Inter'), Arial, sans-serif;
+  fill: var(--color-texto-suave, #64748b);
+}
+
+.graf-titulo,
+.graf-titulo-eje,
+.graf-valor-fuerte {
+  fill: var(--color-texto, #1e293b);
+}
+
+.graf-valor-fuerte {
+  font-weight: 600;
+}
+
+/* Texto con halo del color de fondo: legible encima de puntos y líneas */
+.graf-halo {
+  paint-order: stroke;
+  stroke: var(--color-superficie, #ffffff);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+
+/* --- Ejes y rejilla --- */
+.graf-eje {
+  stroke: var(--color-texto-suave, #64748b);
+  stroke-opacity: 0.55;
+  stroke-width: 1;
+}
+
+.graf-rejilla-linea {
+  stroke: var(--graf-rejilla, #f1f5f9);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+}
+
+/* --- Barras e histograma --- */
+.graf-barra {
+  fill-opacity: 0.82;
+  stroke-width: 1;
+}
+
+/* --- Puntos --- */
+.graf-punto {
+  fill-opacity: 0.9;
+  stroke: var(--color-superficie, #ffffff);
+  stroke-width: 1.5;
+}
+
+/* --- Recta de regresión y su etiqueta --- */
+.graf-recta {
+  stroke: var(--graf-coral, #f43f5e);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+.graf-etiqueta-fondo {
+  fill: var(--color-superficie, #ffffff);
+  fill-opacity: 0.92;
+  stroke: var(--color-borde, #e2e8f0);
+  stroke-width: 1;
+}
+
+.graf-etiqueta-recta {
+  fill: var(--color-texto, #1e293b);
+  font-weight: 500;
+}
+
+/* --- Diagrama de caja --- */
+.graf-caja-rect {
+  fill-opacity: 0.16;
+  stroke-width: 1.5;
+}
+
+.graf-mediana {
+  stroke: var(--color-texto, #1e293b);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+.graf-bigote {
+  stroke: var(--color-texto-suave, #64748b);
+  stroke-width: 1.25;
+}
+
+.graf-atipico {
+  fill: var(--color-superficie, #ffffff);
+  stroke: var(--graf-coral, #f43f5e);
+  stroke-width: 1.5;
+}
+
+/* --- Clusters: elipses y centroides --- */
+.graf-elipse {
+  fill-opacity: 0.07;
+  stroke-opacity: 0.6;
+  stroke-width: 1.5;
+  stroke-dasharray: 5 4;
+}
+
+.graf-centroide-halo {
+  stroke: var(--color-superficie, #ffffff);
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+
+.graf-centroide-trazo {
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+/* --- Resaltado al pasar el mouse o recorrer con el teclado --- */
+.graf-interactivo {
+  cursor: pointer;
+  transition: opacity 180ms ease, fill-opacity 180ms ease, stroke-width 180ms ease;
+}
+
+.graf-svg.graf-resaltando .graf-interactivo {
+  opacity: 0.25;
+}
+
+.graf-svg.graf-resaltando .graf-interactivo.graf-activo {
+  opacity: 1;
+}
+
+.graf-barra.graf-activo {
+  fill-opacity: 1;
+  stroke: var(--color-texto, #1e293b);
+  stroke-width: 1.5;
+}
+
+.graf-punto.graf-activo {
+  fill-opacity: 1;
+  stroke: var(--color-texto, #1e293b);
+  stroke-width: 2;
+}
+
+.graf-caja-rect.graf-activo {
+  fill-opacity: 0.3;
+}
+
+.graf-atipico.graf-activo {
+  stroke-width: 2.5;
+}
+
+/* Series ocultas desde la leyenda */
+.graf-oculto {
+  display: none;
+}
+
+/* --- Tooltip --- */
+.graf-tooltip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: 260px;
+  padding: 8px 10px;
+  background: var(--color-superficie, #ffffff);
+  border: 1px solid var(--color-borde, #e2e8f0);
+  border-radius: var(--radio, 8px);
+  box-shadow: var(--sombra-md, 0 4px 12px rgba(15, 23, 42, 0.12));
+  color: var(--color-texto-suave, #64748b);
+  font-family: var(--fuente, 'Inter'), Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.4;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 150ms ease, visibility 150ms ease;
+}
+
+.graf-tooltip strong {
+  color: var(--color-texto, #1e293b);
+  font-weight: 600;
+}
+
+.graf-tooltip--visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* --- Leyenda --- */
+.graf-leyenda {
+  padding: 12px;
+  background: var(--color-fondo, #f8fafc);
+  border: 1px solid var(--color-borde, #e2e8f0);
+  border-radius: var(--radio, 8px);
+}
+
+.graf-leyenda-titulo {
+  margin: 0 0 8px;
+  color: var(--color-texto-suave, #64748b);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.graf-leyenda-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.graf-leyenda-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin: 0;
+  padding: 6px 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: calc(var(--radio, 8px) - 2px);
+  color: var(--color-texto, #1e293b);
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 150ms ease, opacity 150ms ease;
+}
+
+.graf-leyenda-item:hover {
+  background: var(--color-superficie, #ffffff);
+  border-color: var(--color-borde, #e2e8f0);
+}
+
+.graf-leyenda-item:focus-visible {
+  outline: 2px solid var(--color-primario, #0f766e);
+  outline-offset: 1px;
+}
+
+/* Serie oculta: atenuada y tachada (no depende solo del color) */
+.graf-leyenda-item[aria-pressed="false"] {
+  opacity: 0.55;
+  text-decoration: line-through;
+}
+
+.graf-leyenda-muestra {
+  flex: 0 0 auto;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.graf-leyenda-muestra--linea {
+  height: 3px;
+  width: 16px;
+  border-radius: 2px;
+}
+
+/* Texto solo para lectores de pantalla */
+.graf-anuncio {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --- Animación de entrada (solo si el usuario no pidió reducir movimiento) --- */
+@media (prefers-reduced-motion: no-preference) {
+  .graf-barra {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    animation: graf-crecer 450ms ease-out backwards;
+    animation-delay: var(--graf-retraso, 0ms);
+  }
+
+  .graf-punto {
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
+    animation: graf-aparecer 300ms ease-out backwards;
+    animation-delay: var(--graf-retraso, 0ms);
+  }
+
+  .graf-recta,
+  .graf-etiqueta,
+  .graf-elipse,
+  .graf-centroide {
+    animation: graf-desvanecer 400ms ease-out 250ms backwards;
+  }
+}
+
+@keyframes graf-crecer {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+
+@keyframes graf-aparecer {
+  from { opacity: 0; transform: scale(0.4); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes graf-desvanecer {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .graf-interactivo,
+  .graf-tooltip,
+  .graf-leyenda-item,
+  .graf-tarjeta .graf-boton,
+  .graf-opcion,
+  .graf-panel .graf-campo select,
+  .graf-panel .graf-campo input[type="number"],
+  .graf-panel .graf-generar {
+    transition: none;
+  }
+}
+
+/* --- Tablet: la leyenda pasa debajo del gráfico; campos a todo el ancho --- */
+@media (max-width: 800px) {
+  /* Las 5 opciones en una fila: solo icono y nombre */
+  .graf-selector {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .graf-opcion {
+    padding: 10px;
+  }
+
+  .graf-opcion-texto span {
+    display: none;
+  }
+
+  .graf-panel {
+    padding: 16px;
+  }
+
+  .graf-panel .graf-campo {
+    max-width: none;
+  }
+
+  .graf-tarjeta {
+    padding: 12px;
+  }
+
+  .graf-cuerpo--con-leyenda {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .graf-leyenda-lista {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .graf-leyenda-item {
+    width: auto;
+  }
+}

@@ -1,0 +1,429 @@
+/* ==========================================================================
+   P6 · Viviana — Panel de resultados, métricas y notificaciones (prefijo .res-)
+   Usa las variables de css/variables.css con valores de respaldo.
+   ========================================================================== */
+
+/* ==========================================================================
+   TOASTS (mostrarToast)
+   ========================================================================== */
+.res-toasts {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(360px, calc(100vw - 32px));
+  pointer-events: none;
+}
+
+.res-toast {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 12px 12px 14px;
+  background: var(--color-superficie, #ffffff);
+  border: 1px solid var(--color-borde, #e2e8f0);
+  border-left: 4px solid var(--res-toast-color, var(--color-info, #2563eb));
+  border-radius: var(--radio, 8px);
+  box-shadow: var(--sombra-md, 0 4px 12px rgba(15, 23, 42, 0.10));
+  color: var(--color-texto, #1e293b);
+  font-family: var(--fuente, 'Inter', sans-serif);
+  font-size: 13px;
+  line-height: 1.4;
+  pointer-events: auto;
+}
+
+.res-toast--exito { --res-toast-color: var(--color-exito, #059669); }
+.res-toast--error { --res-toast-color: var(--color-error, #dc2626); }
+.res-toast--info { --res-toast-color: var(--color-info, #2563eb); }
+.res-toast--aviso { --res-toast-color: var(--color-aviso, #d97706); }
+
+.res-toast-icono {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  fill: none;
+  stroke: var(--res-toast-color, var(--color-info, #2563eb));
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.res-toast-cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.res-toast-cuerpo strong {
+  font-weight: 600;
+}
+
+.res-toast-cuerpo span {
+  color: var(--color-texto-suave, #64748b);
+  overflow-wrap: anywhere;
+}
+
+.res-toast .res-toast-cerrar {
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  margin: -4px -2px 0 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  color: var(--color-texto-suave, #64748b);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.res-toast .res-toast-cerrar:hover {
+  background: var(--color-fondo, #f0fdfa);
+  color: var(--color-texto, #1e293b);
+}
+
+.res-toast .res-toast-cerrar:focus-visible {
+  outline: 2px solid var(--color-primario, #0f766e);
+  outline-offset: 1px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .res-toast {
+    animation: res-toast-entrar 220ms ease-out;
+  }
+
+  .res-toast--saliendo {
+    animation: res-toast-salir 200ms ease-in forwards;
+  }
+}
+
+.res-toast--saliendo {
+  opacity: 0;
+}
+
+@keyframes res-toast-entrar {
+  from { opacity: 0; transform: translateX(24px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes res-toast-salir {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(24px); }
+}
+
+/* ==========================================================================
+   REPORTE: títulos, párrafos y avisos
+   ========================================================================== */
+#panel-resultados .res-titulo {
+  margin: 0 0 12px;
+  color: var(--color-texto, #1e293b);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+#panel-resultados .res-subtitulo {
+  margin: 20px 0 8px;
+  color: var(--color-texto-suave, #64748b);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+#panel-resultados .res-parrafo {
+  margin: 4px 0;
+  color: var(--color-texto, #1e293b);
+  font-size: 14px;
+}
+
+#panel-resultados .res-aviso {
+  margin: 10px 0;
+  padding: 10px 12px;
+  border-radius: var(--radio, 8px);
+  background: var(--color-aviso-fondo, #fffbeb);
+  color: var(--color-aviso-texto, #92400e);
+  font-size: 13px;
+}
+
+/* ==========================================================================
+   TARJETAS KPI
+   ========================================================================== */
+.res-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+  margin: 12px 0 16px;
+  padding: 0;
+}
+
+.res-kpi {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    "icono valor"
+    "icono etiqueta"
+    "icono nota";
+  column-gap: 12px;
+  align-items: center;
+  padding: 14px 16px;
+  background: var(--color-superficie, #ffffff);
+  border: 1px solid var(--color-borde, #e2e8f0);
+  border-radius: var(--radio, 8px);
+  box-shadow: var(--sombra-sm, 0 1px 2px rgba(15, 23, 42, 0.06));
+}
+
+.res-kpi-icono {
+  grid-area: icono;
+  align-self: start;
+  width: 36px;
+  height: 36px;
+  margin: 0;
+  padding: 8px;
+  border-radius: var(--radio, 8px);
+  background: var(--color-fondo, #f0fdfa);
+  fill: none;
+  stroke: var(--color-primario, #0f766e);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.res-kpi-valor {
+  grid-area: valor;
+  margin: 0;
+  color: var(--color-texto, #1e293b);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.res-kpi-etiqueta {
+  grid-area: etiqueta;
+  margin: 2px 0 0;
+  color: var(--color-texto-suave, #64748b);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.res-kpi-nota {
+  grid-area: nota;
+  margin: 0;
+  color: var(--color-texto-suave, #64748b);
+  font-size: 11px;
+}
+
+/* ==========================================================================
+   TABLAS DE RESULTADOS
+   ========================================================================== */
+.res-tabla-contenedor {
+  max-width: 100%;
+  margin: 8px 0 16px;
+  overflow-x: auto;
+  border: 1px solid var(--color-borde, #e2e8f0);
+  border-radius: var(--radio, 8px);
+}
+
+.res-tabla-contenedor:focus-visible {
+  outline: 2px solid var(--color-primario, #0f766e);
+  outline-offset: 2px;
+}
+
+#panel-resultados .res-tabla {
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+#panel-resultados .res-tabla th,
+#panel-resultados .res-tabla td {
+  min-width: 0;
+  padding: 9px 14px;
+  border: 0;
+  border-bottom: 1px solid var(--color-borde, #e2e8f0);
+  text-align: left;
+  white-space: nowrap;
+}
+
+#panel-resultados .res-tabla th {
+  background: var(--color-fondo, #f0fdfa);
+  color: var(--color-texto-suave, #64748b);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+#panel-resultados .res-tabla tbody tr:nth-child(even) td {
+  background: var(--color-fondo, #f8fafc);
+}
+
+#panel-resultados .res-tabla tbody tr:nth-child(odd) td {
+  background: var(--color-superficie, #ffffff);
+}
+
+#panel-resultados .res-tabla tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+#panel-resultados .res-tabla .res-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ==========================================================================
+   DECISIÓN (badges de H₀) E INTERPRETACIÓN
+   ========================================================================== */
+.res-decision {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin: 16px 0 8px;
+}
+
+.res-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* El icono (✓ / –) acompaña al color: no depende solo de él */
+.res-badge::before {
+  font-weight: 700;
+}
+
+.res-badge--rechaza {
+  background: var(--color-exito-fondo, #ecfdf5);
+  color: var(--color-exito-texto, #065f46);
+}
+
+.res-badge--rechaza::before {
+  content: "✓";
+}
+
+.res-badge--no-rechaza {
+  background: var(--color-aviso-fondo, #fffbeb);
+  color: var(--color-aviso-texto, #92400e);
+}
+
+.res-badge--no-rechaza::before {
+  content: "–";
+}
+
+.res-decision-detalle {
+  color: var(--color-texto-suave, #64748b);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.res-interpretacion {
+  margin: 12px 0;
+  padding: 12px 16px;
+  border-left: 4px solid var(--color-primario, #0f766e);
+  border-radius: 0 var(--radio, 8px) var(--radio, 8px) 0;
+  background: var(--color-fondo, #f0fdfa);
+}
+
+#panel-resultados .res-interpretacion-titulo {
+  margin: 0 0 2px;
+  color: var(--color-primario, #0f766e);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+#panel-resultados .res-interpretacion-texto {
+  margin: 0;
+  color: var(--color-texto, #1e293b);
+  font-size: 14px;
+}
+
+/* ==========================================================================
+   ESTADO VACÍO
+   ========================================================================== */
+.res-vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 40px 16px;
+  border: 1px dashed var(--color-borde, #e2e8f0);
+  border-radius: var(--radio, 8px);
+  background: var(--color-fondo, #f8fafc);
+  text-align: center;
+}
+
+.res-vacio-ilustracion {
+  width: 120px;
+  height: 96px;
+  margin: 0 0 8px;
+}
+
+.res-vacio-hoja {
+  fill: var(--color-superficie, #ffffff);
+  stroke: var(--color-borde, #e2e8f0);
+  stroke-width: 2;
+}
+
+.res-vacio-linea {
+  fill: none;
+  stroke: var(--color-borde, #e2e8f0);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.res-vacio-barra {
+  fill: var(--color-secundario, #14b8a6);
+  opacity: 0.45;
+}
+
+.res-vacio-barra--acento {
+  fill: var(--color-primario, #0f766e);
+  opacity: 0.85;
+}
+
+#panel-resultados .res-vacio-titulo {
+  margin: 0;
+  color: var(--color-texto, #1e293b);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+#panel-resultados .res-vacio-texto {
+  margin: 0;
+  color: var(--color-texto-suave, #64748b);
+  font-size: 13px;
+}
+
+/* ==========================================================================
+   TABLET
+   ========================================================================== */
+@media (max-width: 800px) {
+  .res-kpis {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+
+  .res-kpi-valor {
+    font-size: 20px;
+  }
+
+  .res-toasts {
+    top: 12px;
+    right: 12px;
+  }
+}

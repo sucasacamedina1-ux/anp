@@ -18,8 +18,8 @@ function tablaFrecuencias(valores) {
     filas.push({
       valor: isNaN(Number(clave)) ? clave : Number(clave),
       absoluta: conteo[clave],
-      relativa: conteo[clave] / total,
-      porcentual: (conteo[clave] / total) * 100
+      relativa: total > 0 ? (conteo[clave] / total) : 0,
+      porcentual: total > 0 ? ((conteo[clave] / total) * 100) : 0
     });
   }
 
@@ -88,7 +88,8 @@ function tablaFrecuenciasIntervalos(valores, numIntervalos) {
   var intervalos = [];
   for (var k = 0; k < numIntervalos; k++) {
     var li = min + k * amplitud;
-    var ls = li + amplitud;
+    // Para el último intervalo, forzar limiteSuperior = max para evitar pérdida por punto flotante
+    var ls = (k === numIntervalos - 1) ? max : (li + amplitud);
     intervalos.push({
       limiteInferior: li,
       limiteSuperior: ls,
@@ -101,13 +102,14 @@ function tablaFrecuenciasIntervalos(valores, numIntervalos) {
     });
   }
 
-  // Contar
+  // Contar frecuencias en cada intervalo
   for (var j = 0; j < validos.length; j++) {
     var val = validos[j];
     for (var k2 = 0; k2 < intervalos.length; k2++) {
       var esUltimo = (k2 === intervalos.length - 1);
       if (esUltimo) {
-        if (val >= intervalos[k2].limiteInferior && val <= intervalos[k2].limiteSuperior) {
+        // En el último intervalo se incluye el límite superior con margen de precisión
+        if (val >= intervalos[k2].limiteInferior && val <= (intervalos[k2].limiteSuperior + 1e-12)) {
           intervalos[k2].absoluta++;
           break;
         }

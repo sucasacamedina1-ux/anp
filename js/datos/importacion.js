@@ -1,5 +1,25 @@
 // Importación de archivos CSV y pegado desde Excel
 
+// Aviso al usuario con mostrarToast (P6) o, si esa rama aún no está, por consola
+function avisarDatos(mensaje, tipo) {
+  if (typeof window.mostrarToast === "function") window.mostrarToast(mensaje, tipo);
+  else console.info(mensaje);
+}
+
+// Texto "N filas, M columnas" para los avisos
+function resumenHoja() {
+  return datos.filas + (datos.filas === 1 ? " fila" : " filas") + ", " +
+    datos.columnas.length + (datos.columnas.length === 1 ? " columna" : " columnas");
+}
+
+// Tras cargar datos nuevos, los selectores de variables deben reflejarlos
+function refrescarSelectores() {
+  if (typeof actualizarSelectoresVariables === "function") actualizarSelectoresVariables();
+  if (typeof actualizarBarraEstado === "function" && typeof seccionVisible === "function") {
+    actualizarBarraEstado(seccionVisible());
+  }
+}
+
 // Lee un archivo CSV y reemplaza los datos
 function importarCSV(archivo) {
   var lector = new FileReader();
@@ -10,7 +30,7 @@ function importarCSV(archivo) {
   };
 
   lector.onerror = function () {
-    alert("No se pudo leer el archivo.");
+    avisarDatos("No se pudo leer el archivo CSV.", "error");
   };
 
   lector.readAsText(archivo);
@@ -20,7 +40,7 @@ function importarCSV(archivo) {
 function procesarCSV(texto) {
   // Detectar delimitador: coma o punto y coma
   var delimitador = ",";
-  var primeraLinea = texto.split("\n")[0];
+  var primeraLinea = texto.split(/\r?\n/)[0];
   if (primeraLinea.indexOf(";") !== -1 && primeraLinea.indexOf(",") === -1) {
     delimitador = ";";
   }
@@ -35,7 +55,7 @@ function procesarCSV(texto) {
   }
 
   if (filas.length === 0) {
-    alert("El archivo está vacío.");
+    avisarDatos("El archivo CSV está vacío.", "error");
     return;
   }
 
@@ -78,7 +98,7 @@ function procesarCSV(texto) {
   var nuevasColumnas = [];
   for (var c = 0; c < maxCols; c++) {
     nuevasColumnas.push({
-      nombre: nombresColumnas[c].trim(),
+      nombre: nombresColumnas[c].trim() || ("C" + (c + 1)),
       tipo: "numerica",
       valores: []
     });
@@ -103,7 +123,8 @@ function procesarCSV(texto) {
 
   reemplazarDatos(nuevasColumnas);
   actualizarTiposColumnas();
-  alert("CSV importado: " + datos.filas + " filas, " + datos.columnas.length + " columnas.");
+  refrescarSelectores();
+  avisarDatos("Datos importados con éxito (" + resumenHoja() + ")", "exito");
 }
 
 // Pegado desde Excel (tabulaciones y saltos de línea)
@@ -118,25 +139,53 @@ function pegarDesdeTexto(texto) {
   }
 
   if (filas.length === 0) {
-    alert("No hay datos para pegar.");
+    avisarDatos("No hay datos para pegar.", "error");
     return;
   }
 
-  var maxCols = 0;
-  for (var j = 0; j < filas.length; j++) {
+  // Detectar encabezado en la primera fila
+  var primera = filas[0];
+  var esEncabezado = false;
+  var numerosEnPrimera = 0;
+  for (var p = 0; p < primera.length; p++) {
+    var numP = Number(primera[p]);
+    if (!isNaN(numP) && primera[p].trim() !== "") numerosEnPrimera++;
+  }
+  if (numerosEnPrimera < primera.length && filas.length > 1) {
+    esEncabezado = true;
+  }
+
+  var nombresColumnas = [];
+  var inicioDatos = 0;
+
+  if (esEncabezado) {
+    nombresColumnas = primera;
+    inicioDatos = 1;
+  } else {
+    for (var k = 0; k < primera.length; k++) {
+      nombresColumnas.push("C" + (k + 1));
+    }
+  }
+
+  var maxCols = nombresColumnas.length;
+  for (var j = inicioDatos; j < filas.length; j++) {
     if (filas[j].length > maxCols) maxCols = filas[j].length;
+  }
+
+  while (nombresColumnas.length < maxCols) {
+    nombresColumnas.push("C" + (nombresColumnas.length + 1));
   }
 
   var nuevasColumnas = [];
   for (var c = 0; c < maxCols; c++) {
     nuevasColumnas.push({
-      nombre: "C" + (c + 1),
+      nombre: nombresColumnas[c].trim() || ("C" + (c + 1)),
       tipo: "numerica",
       valores: []
     });
   }
 
-  for (var f = 0; f < filas.length; f++) {
+  for (var f = inicioDatos; f < filas.length; f++) {
     for (var c2 = 0; c2 < maxCols; c2++) {
       var celda = filas[f][c2];
       if (celda === undefined || celda.trim() === "") {
@@ -154,5 +203,6 @@ function pegarDesdeTexto(texto) {
 
   reemplazarDatos(nuevasColumnas);
   actualizarTiposColumnas();
-  alert("Datos pegados: " + datos.filas + " filas, " + datos.columnas.length + " columnas.");
+  refrescarSelectores();
+  avisarDatos("Datos pegados con éxito (" + resumenHoja() + ")", "exito");
 }

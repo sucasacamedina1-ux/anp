@@ -1,0 +1,64 @@
+/* ==========================================================================
+   Variables de estilo - Formato Dashboard MultiStats (UNA / FIEI)
+   ========================================================================== */
+
+:root {
+  /* --- Colores de marca y encabezado (Verde Azulado / Dark Teal) --- */
+  --color-header: #005953;
+  --color-header-oscuro: #004540;
+  --color-header-texto: #ffffff;
+
+  --color-primario: #005953;
+  --color-primario-hover: #004540;
+  --color-primario-suave: #e6f7f5;
+
+  --color-acento: #00a896;
+  --color-acento-hover: #008f80;
+  --color-acento-claro: #3dd5c4;
+
+  /* --- Fondos y estructura del layout --- */
+  --color-fondo-app: #edf6f5;
+  --color-superficie: #ffffff;
+  --color-superficie-suave: #f4faf8;
+  --color-borde: #cfe6e2;
+  --color-borde-suave: #e3f2ef;
+  --color-borde-fuerte: #9fcac4;
+
+  /* --- Tabla de datos --- */
+  --color-tabla-head-bg: #005953;
+  --color-tabla-head-texto: #ffffff;
+  --color-tabla-fila-par: #ffffff;
+  --color-tabla-fila-impar: #f9fdfc;
+  --color-tabla-hover: #eaf7f5;
+
+  /* --- Texto --- */
+  --color-texto: #132e2b;
+  --color-texto-suave: #4a6b66;
+  --color-texto-muted: #6f928d;
+
+  /* --- Estados --- */
+  --color-exito: #00a896;
+  --color-exito-fondo: #e6f7f5;
+  --color-exito-texto: #005953;
+  --color-error: #e53935;
+  --color-aviso: #f59e0b;
+  --color-info: #0284c7;
+
+  /* --- Forma y sombras --- */
+  --radio-sm: 4px;
+  --radio: 8px;
+  --radio-lg: 12px;
+  --radio-pill: 999px;
+  --sombra-card: 0 1px 3px rgba(0, 50, 45, 0.06), 0 1px 2px rgba(0, 50, 45, 0.04);
+  --sombra-md: 0 4px 12px rgba(0, 50, 45, 0.08);
+
+  /* --- Tipografía --- */
+  --fuente: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* --- Paleta de gráficos SVG --- */
+  --graf-azul: #00a896;
+  --graf-purpura: #005953;
+  --graf-esmeralda: #10b981;
+  --graf-coral: #e53935;
+  --graf-rejilla: #e2f0ee;
+}
