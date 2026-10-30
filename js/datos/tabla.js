@@ -24,6 +24,7 @@ function letraColumna(indice) {
   }
   return letra;
 }
+console.assert(letraColumna(0) === "A" && letraColumna(25) === "Z" && letraColumna(26) === "AA" && letraColumna(701) === "ZZ");
 
 // Escapa texto para insertarlo en HTML
 function escaparHTML(texto) {
@@ -58,8 +59,16 @@ function dibujarTabla() {
 
   var html = "<div class='dash-tabla-contenedor'><table class='dash-tabla-data'>";
 
+  // Fila de letras de columna estilo Excel
+  html += "<thead><tr class='tabla-letras'><th></th>";
+  for (var l = 0; l < datos.columnas.length; l++) {
+    html += "<th>" + letraColumna(l) + "</th>";
+  }
+  if (hayClusters) html += "<th></th>";
+  html += "<th></th></tr>";
+
   // Encabezados de columnas (Estilo UNA: verde azulado #005953)
-  html += "<thead><tr>";
+  html += "<tr class='tabla-nombres'>";
   html += "<th style='width: 38px; text-align: center;'>#</th>";
   for (var c = 0; c < datos.columnas.length; c++) {
     var nombre = escaparHTML(datos.columnas[c].nombre);
