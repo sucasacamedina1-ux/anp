@@ -1,0 +1,310 @@
+/* ==========================================================================
+   P3 · Blanca — Formularios y controles de estadística (prefijo .est-)
+   Usa las variables de css/variables.css con valores de respaldo.
+   ========================================================================== */
+
+#seccion-estadistica .est-intro {
+  max-width: 75ch;
+  margin: 0 0 16px;
+  color: var(--color-texto-suave, #64748b);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* --- Cuadrícula de tarjetas: 2 columnas en laptop, 1 en tablet --- */
+.est-cuadricula {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+/* --- Tarjeta colapsable (<details>) --- */
+.est-tarjeta {
+  background: var(--color-superficie, #ffffff);
+  border: 1px solid var(--color-borde, #e2e8f0);
+  border-radius: var(--radio, 8px);
+  box-shadow: var(--sombra-sm, 0 1px 2px rgba(15, 23, 42, 0.06));
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.est-tarjeta[open] {
+  border-color: var(--color-secundario, #14b8a6);
+  box-shadow: var(--sombra-md, 0 4px 12px rgba(15, 23, 42, 0.10));
+}
+
+.est-tarjeta-resumen {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: var(--radio, 8px);
+  cursor: pointer;
+  list-style: none;
+}
+
+.est-tarjeta-resumen::-webkit-details-marker {
+  display: none;
+}
+
+.est-tarjeta-resumen:hover {
+  background: var(--color-fondo, #f0fdfa);
+}
+
+.est-tarjeta-resumen:focus-visible {
+  outline: 2px solid var(--color-primario, #0f766e);
+  outline-offset: 2px;
+}
+
+.est-icono {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radio, 8px);
+  background: var(--color-fondo, #f0fdfa);
+}
+
+.est-icono svg,
+.est-chevron {
+  display: block;
+  margin: 0;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.est-icono svg {
+  width: 22px;
+  height: 22px;
+  stroke: var(--color-primario, #0f766e);
+  stroke-width: 1.8;
+}
+
+.est-tarjeta-textos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.est-tarjeta-titulo {
+  color: var(--color-texto, #1e293b);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.est-tarjeta-desc {
+  color: var(--color-texto-suave, #64748b);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.est-chevron {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  stroke: var(--color-texto-suave, #64748b);
+  stroke-width: 2;
+  transition: transform 200ms ease;
+}
+
+.est-tarjeta[open] .est-chevron {
+  transform: rotate(180deg);
+}
+
+.est-tarjeta-cuerpo {
+  padding: 4px 16px 16px;
+  border-top: 1px solid var(--color-borde, #e2e8f0);
+}
+
+/* --- Grupos de controles dentro de cada tarjeta --- */
+.est-grupo {
+  padding: 14px 0;
+  border-bottom: 1px dashed var(--color-borde, #e2e8f0);
+}
+
+.est-grupo:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+#seccion-estadistica .est-grupo-titulo {
+  margin: 0 0 10px;
+  color: var(--color-texto-suave, #64748b);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.est-campos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+#seccion-estadistica .est-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1 1 170px;
+  min-width: 0;
+  margin: 0;
+}
+
+#seccion-estadistica .est-campo--corto {
+  flex: 0 1 120px;
+}
+
+#seccion-estadistica .est-campo--multiple {
+  flex: 1 1 100%;
+}
+
+.est-etiqueta {
+  color: var(--color-texto, #1e293b);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.est-ayuda {
+  color: var(--color-texto-suave, #64748b);
+  font-size: 12px;
+}
+
+/* --- Inputs y selects --- */
+#seccion-estadistica select,
+#seccion-estadistica input[type="number"] {
+  width: 100%;
+  margin: 0;
+  padding: 9px 12px;
+  background: var(--color-superficie, #ffffff);
+  border: 1px solid var(--color-borde, #e2e8f0);
+  border-radius: var(--radio, 8px);
+  color: var(--color-texto, #1e293b);
+  font-family: var(--fuente, 'Inter', sans-serif);
+  font-size: 14px;
+  transition: border-color 150ms ease;
+}
+
+#seccion-estadistica select:hover,
+#seccion-estadistica input[type="number"]:hover {
+  border-color: var(--color-secundario, #14b8a6);
+}
+
+#seccion-estadistica select:focus-visible,
+#seccion-estadistica input[type="number"]:focus-visible {
+  outline: 2px solid var(--color-primario, #0f766e);
+  outline-offset: 1px;
+  border-color: var(--color-primario, #0f766e);
+}
+
+/* Select simple con flecha propia (dibujada con CSS, sin colores fijos) */
+.est-select {
+  position: relative;
+  display: block;
+}
+
+.est-select::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid var(--color-texto-suave, #64748b);
+  border-bottom: 2px solid var(--color-texto-suave, #64748b);
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none;
+}
+
+.est-select select {
+  padding-right: 36px;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+/* Select múltiple: opciones elegidas resaltadas con el color primario */
+#seccion-estadistica .est-multiple {
+  padding: 6px;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+.est-multiple option {
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+.est-multiple option:checked,
+.est-multiple:focus option:checked {
+  background: var(--color-primario, #0f766e) linear-gradient(var(--color-primario, #0f766e), var(--color-primario, #0f766e));
+  color: var(--color-superficie, #ffffff);
+}
+
+/* --- Botones: principal sólido y secundario outline --- */
+.est-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+#seccion-estadistica .est-btn {
+  margin: 0;
+  padding: 9px 16px;
+  border: 1px solid var(--color-primario, #0f766e);
+  border-radius: var(--radio, 8px);
+  font-family: var(--fuente, 'Inter', sans-serif);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+#seccion-estadistica .est-btn--primario {
+  background: var(--color-primario, #0f766e);
+  color: var(--color-superficie, #ffffff);
+  font-weight: 600;
+}
+
+#seccion-estadistica .est-btn--primario:hover {
+  background: var(--color-primario-oscuro, #115e59);
+  border-color: var(--color-primario-oscuro, #115e59);
+}
+
+#seccion-estadistica .est-btn--secundario {
+  background: var(--color-superficie, #ffffff);
+  color: var(--color-primario, #0f766e);
+  font-weight: 500;
+}
+
+#seccion-estadistica .est-btn--secundario:hover {
+  background: var(--color-fondo, #f0fdfa);
+  color: var(--color-primario-oscuro, #115e59);
+}
+
+#seccion-estadistica .est-btn:focus-visible {
+  outline: 2px solid var(--color-primario, #0f766e);
+  outline-offset: 2px;
+}
+
+/* --- Tablet: una columna --- */
+@media (max-width: 900px) {
+  .est-cuadricula {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .est-tarjeta,
+  .est-chevron,
+  #seccion-estadistica select,
+  #seccion-estadistica input[type="number"],
+  #seccion-estadistica .est-btn {
+    transition: none;
+  }
+}

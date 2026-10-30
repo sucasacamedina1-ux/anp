@@ -1,0 +1,452 @@
+/* ==========================================================================
+   MultiStats — Estilos base y layout (prefijos .app- / .nav-)
+   ========================================================================== */
+
+/* --- Reset suave y tipografía --- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-fondo, #f8fafc);
+  color: var(--color-texto, #0f172a);
+  font-family: var(--fuente, 'Inter', sans-serif);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Botones, campos y selects heredan la fuente del sistema de diseño */
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+/* Foco visible con teclado en toda la app */
+:focus-visible {
+  outline: 2px solid var(--color-primario, #0284c7);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   HEADER: barra de aplicación MultiStats
+   ========================================================================== */
+.app-header {
+  background: var(--color-primario-oscuro, #0a192f);
+  color: var(--color-superficie, #ffffff);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0;
+}
+
+.app-header-contenido {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 12px 24px;
+}
+
+.app-marca {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.app-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radio, 10px);
+  background: #ffffff;
+  padding: 2px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+.app-logo-imagen {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+}
+
+.app-logo svg {
+  display: block;
+  width: 28px;
+  height: 28px;
+  margin: 0;
+}
+
+.app-marca-texto {
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header .app-titulo {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  display: flex;
+  align-items: center;
+}
+
+.app-titulo-multi {
+  color: #ffffff;
+}
+
+.app-titulo-stats {
+  background: linear-gradient(135deg, #38bdf8 0%, #2dd4bf 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+}
+
+.app-header .app-subtitulo {
+  margin: 2px 0 0;
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+/* Badge "Hoja activa" tipo píldora */
+.app-header .app-hoja {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #a7f3d0;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.app-hoja #hoja-activa {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.app-hoja-punto {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-exito, #10b981);
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.8);
+}
+
+/* ==========================================================================
+   NAV: pestañas con icono e indicador animado
+   ========================================================================== */
+.nav-barra {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--color-superficie, #ffffff);
+  border-bottom: 1px solid var(--color-borde, #e2e8f0);
+  box-shadow: var(--sombra-sm, 0 1px 2px rgba(15, 23, 42, 0.05));
+  padding: 0;
+}
+
+.nav-pestanas {
+  display: flex;
+  gap: 4px;
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.nav-pestanas::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-barra .nav-pestana {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 14px 16px 13px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  color: var(--color-texto-suave, #64748b);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 180ms ease, background-color 180ms ease;
+}
+
+/* Indicador inferior animado */
+.nav-barra .nav-pestana::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 0;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: var(--color-primario, #0284c7);
+  transform: scaleX(0);
+  transition: transform 220ms ease;
+}
+
+.nav-barra .nav-pestana:hover {
+  color: var(--color-texto, #0f172a);
+  background: var(--color-fondo, #f8fafc);
+}
+
+.nav-barra .nav-pestana--activa {
+  color: var(--color-primario, #0284c7);
+  background: var(--color-info-fondo, #f0f9ff);
+  font-weight: 600;
+}
+
+.nav-barra .nav-pestana--activa::after {
+  transform: scaleX(1);
+}
+
+.nav-barra .nav-pestana:focus-visible {
+  outline: 2px solid var(--color-primario, #0284c7);
+  outline-offset: -2px;
+}
+
+.nav-icono {
+  display: block;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ==========================================================================
+   MAIN: contenedor centrado y secciones como tarjetas
+   ========================================================================== */
+.app-main {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.app-main > section {
+  background: var(--color-superficie, #ffffff);
+  border: 1px solid var(--color-borde, #e2e8f0);
+  border-radius: calc(var(--radio, 10px) + 2px);
+  box-shadow: var(--sombra-sm, 0 1px 2px rgba(15, 23, 42, 0.05));
+  padding: 24px;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.app-main > section > h2 {
+  margin: 0 0 14px;
+  color: var(--color-texto, #0f172a);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* Encabezado y acciones de resultados */
+.res-encabezado-seccion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--color-borde, #e2e8f0);
+  padding-bottom: 12px;
+}
+
+.res-encabezado-seccion h2 {
+  margin: 0;
+}
+
+.res-acciones {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ==========================================================================
+   BOTONES GENÉRICOS (reutilizables)
+   ========================================================================== */
+.app-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 0;
+  padding: 8px 16px;
+  border: 1px solid var(--color-borde, #e2e8f0);
+  border-radius: var(--radio, 10px);
+  background: var(--color-superficie, #ffffff);
+  color: var(--color-texto, #0f172a);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.app-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.app-btn:hover:not(:disabled) {
+  border-color: var(--color-primario, #0284c7);
+  color: var(--color-primario, #0284c7);
+  background: var(--color-info-fondo, #f0f9ff);
+}
+
+.app-btn--primario {
+  background: var(--color-primario, #0284c7);
+  border-color: var(--color-primario, #0284c7);
+  color: var(--color-superficie, #ffffff);
+  font-weight: 600;
+}
+
+.app-btn--primario:hover:not(:disabled) {
+  background: #0369a1;
+  border-color: #0369a1;
+  color: #ffffff;
+}
+
+.app-btn--secundario {
+  background: var(--color-superficie, #ffffff);
+  border-color: var(--color-borde, #e2e8f0);
+  color: var(--color-texto-suave, #64748b);
+}
+
+.app-btn--secundario:hover:not(:disabled) {
+  background: var(--color-fondo, #f8fafc);
+  color: var(--color-texto, #0f172a);
+  border-color: var(--color-borde-fuerte, #cbd5e1);
+}
+
+/* ==========================================================================
+   BARRA DE ESTADO INFERIOR
+   ========================================================================== */
+.app-estado {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 20px;
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 12px 24px 24px;
+  color: var(--color-texto-suave, #64748b);
+  font-size: 12px;
+}
+
+.app-estado-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.app-estado-punto {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-exito, #10b981);
+}
+
+/* ==========================================================================
+   RESPONSIVE Y MOVIMIENTO REDUCIDO
+   ========================================================================== */
+@media (max-width: 800px) {
+  .app-header-contenido {
+    padding: 12px 16px;
+  }
+
+  .nav-pestanas {
+    padding: 0 8px;
+    gap: 0;
+  }
+
+  .nav-barra .nav-pestana {
+    padding: 12px 10px 11px;
+    font-size: 13px;
+  }
+
+  .app-main {
+    padding: 16px;
+  }
+
+  .app-main > section {
+    padding: 16px;
+  }
+
+  .app-estado {
+    padding: 12px 16px 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-barra .nav-pestana,
+  .nav-barra .nav-pestana::after,
+  .app-btn {
+    transition: none;
+  }
+}
+
+/* Reglas de impresión limpias para reportes */
+@media print {
+  .app-header,
+  .nav-barra,
+  .app-estado,
+  .res-acciones,
+  .res-toasts {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+  }
+
+  .app-main {
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .app-main > section {
+    display: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  #seccion-resultados {
+    display: block !important;
+  }
+}

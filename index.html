@@ -3,360 +3,698 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Estadística Web</title>
+  <title>MultiStats · Aprendizaje no supervisado</title>
+  <link rel="icon" type="image/jpeg" href="assets/logo.jpg">
 
-  <!-- ==========================================================================
-       [PERSONA 1] - ARQUITECTURA VISUAL Y SISTEMA DE DISEÑO BASE
-       - Agregar aquí fuentes modernas de Google Fonts (ej: Inter o Poppins).
-       - Cargar la hoja de estilos base y las hojas modulares de los compañeros.
-       - Configurar favicon, variables CSS globales (:root) y resets modernos.
-       ========================================================================== -->
-  <!-- Google Fonts sugerida (Inter) -->
+  <!-- Google Fonts: Inter moderna -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/estilos.css">
+  <!-- Hojas de estilo modulares de MultiStats -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/tabla.css">
-  <!-- Sugerencia: Modularizar CSS para que cada persona trabaje en su archivo:
-  <link rel="stylesheet" href="css/base.css">         <-- Persona 1
-  <link rel="stylesheet" href="css/tabla.css">        <-- Persona 2
-  <link rel="stylesheet" href="css/estadistica.css">  <-- Persona 3
-  <link rel="stylesheet" href="css/aprendizaje.css">  <-- Persona 4
-  <link rel="stylesheet" href="css/graficos.css">     <-- Persona 5
-  <link rel="stylesheet" href="css/resultados.css">   <-- Persona 6
-  -->
+  <link rel="stylesheet" href="css/estadistica.css">
+  <link rel="stylesheet" href="css/aprendizaje.css">
+  <link rel="stylesheet" href="css/graficos.css">
+  <link rel="stylesheet" href="css/resultados.css">
+  <link rel="stylesheet" href="css/formato_dashboard.css">
 </head>
-<body>
+<body class="dashboard-modo">
 
   <!-- ==========================================================================
-       [PERSONA 1] - ENCABEZADO PRINCIPAL (HEADER)
-       - Diseñar barra superior tipo SaaS/Dashboard moderno con logo o icono.
-       - Estilizar título, subtítulo y la píldora/badge de "Hoja activa".
-       - NOTA IMPORTANTE: MANTENER el id="hoja-activa" intacto.
+       ENCABEZADO SUPERIOR TIPO SAAS (UNA / FIEI)
        ========================================================================== -->
-  <header>
-    <h1>Estadística Web</h1>
-    <p>Plataforma de análisis estadístico</p>
-    <p>Hoja activa: <span id="hoja-activa">Datos1</span></p>
+  <header class="dash-header">
+    <div class="dash-header-izq">
+      <span class="dash-badge-una">UNA</span>
+      <img src="assets/logo.jpg" alt="Logo MultiStats" class="dash-logo-mini">
+      <div class="dash-header-titulos">
+        <div class="dash-app-nombre">
+          <span class="dash-nombre-multi">Multi</span><span class="dash-nombre-stats">Stats</span>
+        </div>
+        <div class="dash-app-subtitulo" title="Aprendizaje no supervisado · Universidad Nacional del Altiplano - Facultad de Ingeniería Estadística e Informática">
+          Aprendizaje no supervisado · UNA - FIEI
+        </div>
+      </div>
+    </div>
+
+    <!-- Menú central interactivo estilo SaaS / UNA con menús desplegables -->
+    <div class="dash-header-centro" aria-label="Menú superior">
+      <!-- 1. ARCHIVO -->
+      <div class="dash-menu-item">
+        <button type="button" class="dash-menu-link" onclick="toggleDropdownMenu('menu-archivo', event)">Archivo ▾</button>
+        <div id="menu-archivo" class="dash-dropdown">
+          <button type="button" class="dash-dropdown-link" onclick="ejecutarAccionMenu('importar-csv')">
+            <span>📥 Importar archivo CSV...</span>
+          </button>
+          <button type="button" class="dash-dropdown-link" onclick="ejecutarAccionMenu('exportar-csv')">
+            <span>📤 Exportar hoja a CSV</span>
+          </button>
+          <button type="button" class="dash-dropdown-link" onclick="ejecutarAccionMenu('exportar-word')">
+            <span>📄 Exportar a Word (.doc)</span>
+          </button>
+          <button type="button" class="dash-dropdown-link" onclick="ejecutarAccionMenu('imprimir-pdf')">
+            <span>🖨️ Imprimir / Guardar como PDF</span>
+          </button>
+          <div class="dash-dropdown-separador"></div>
+          <button type="button" class="dash-dropdown-link" onclick="ejecutarAccionMenu('limpiar-datos')">
+            <span>🔄 Restablecer datos de inicio</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 2. EDITAR -->
+      <div class="dash-menu-item">
+        <button type="button" class="dash-menu-link" onclick="toggleDropdownMenu('menu-editar', event)">Editar ▾</button>
+        <div id="menu-editar" class="dash-dropdown">
+          <button type="button" class="dash-dropdown-link" onclick="ejecutarAccionMenu('agregar-fila')">
+            <span>➕ Agregar fila</span>
+          </button>
+          <button type="button" class="dash-dropdown-link" onclick="ejecutarAccionMenu('agregar-columna')">
+            <span>➕ Agregar columna</span>
+          </button>
+          <div class="dash-dropdown-separador"></div>
+          <button type="button" class="dash-dropdown-link" onclick="ejecutarAccionMenu('filtrar-datos')">
+            <span>🧹 Filtrar (quitar filas vacías)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 3. DATOS -->
+      <div class="dash-menu-item">
+        <button type="button" class="dash-menu-link" onclick="toggleDropdownMenu('menu-datos', event)">Datos ▾</button>
+        <div id="menu-datos" class="dash-dropdown">
+          <button type="button" class="dash-dropdown-link" onclick="ejecutarAccionMenu('ir-tabla')">
+            <span>📋 Ir a la Tabla de datos</span>
+          </button>
+          <button type="button" class="dash-dropdown-link" onclick="ejecutarAccionMenu('filtrar-datos')">
+            <span>🧹 Limpieza de datos (filtrar vacíos)</span>
+          </button>
+          <button type="button" class="dash-dropdown-link" onclick="ejecutarAccionMenu('toggle-estandarizar')">
+            <span>⚖️ Alternar estandarización (media 0, dev 1)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 4. ANALIZAR -->
+      <div class="dash-menu-item">
+        <button type="button" class="dash-menu-link" onclick="toggleDropdownMenu('menu-analizar', event)">Analizar ▾</button>
+        <div id="menu-analizar" class="dash-dropdown" style="min-width: 280px;">
+          <button type="button" class="dash-dropdown-link" onclick="ejecutarAccionMenu('resumen-univariado')">
+            <span>📊 Resumen univariado completo</span>
+          </button>
+          <button type="button" class="dash-dropdown-link" onclick="ejecutarAccionMenu('frecuencias-intervalos')">
+            <span>📋 Frecuencias por intervalos</span>
+          </button>
+          <div class="dash-dropdown-separador"></div>
+          <button type="button" class="dash-dropdown-link" onclick="ejecutarAccionMenu('covarianza-correlacion')">
+            <span>🔗 Covarianza y Correlación (Pearson)</span>
+          </button>
+          <button type="button" class="dash-dropdown-link" onclick="ejecutarAccionMenu('matriz-correlaciones')">
+            <span>📐 Matriz de correlaciones</span>
+          </button>
+          <button type="button" class="dash-dropdown-link" onclick="ejecutarAccionMenu('matriz-covarianzas')">
+            <span>📐 Matriz de covarianzas</span>
+          </button>
+          <div class="dash-dropdown-separador"></div>
+          <button type="button" class="dash-dropdown-link" onclick="ejecutarAccionMenu('regresion-simple')">
+            <span>📈 Regresión lineal simple</span>
+          </button>
+          <button type="button" class="dash-dropdown-link" onclick="ejecutarAccionMenu('regresion-multiple')">
+            <span>📊 Regresión múltiple</span>
+          </button>
+          <div class="dash-dropdown-separador"></div>
+          <button type="button" class="dash-dropdown-link" onclick="ejecutarAccionMenu('ic-media')">
+            <span>🎯 Intervalo de confianza (Media)</span>
+          </button>
+          <button type="button" class="dash-dropdown-link" onclick="ejecutarAccionMenu('prueba-t-una')">
+            <span>🧪 Prueba t (una muestra)</span>
+          </button>
+          <button type="button" class="dash-dropdown-link" onclick="ejecutarAccionMenu('prueba-t-dos')">
+            <span>🧪 Prueba t (dos medias independientes)</span>
+          </button>
+          <div class="dash-dropdown-separador"></div>
+          <button type="button" class="dash-dropdown-link" onclick="ejecutarAccionMenu('config-estadistica')">
+            <span>⚙️ Configurar variables y opciones...</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 5. GRÁFICOS -->
+      <div class="dash-menu-item">
+        <button type="button" class="dash-menu-link" onclick="toggleDropdownMenu('menu-graficos', event)">Gráficos ▾</button>
+        <div id="menu-graficos" class="dash-dropdown">
+          <button type="button" class="dash-dropdown-link" onclick="ejecutarAccionMenu('grafico-dispersion')">
+            <span>📈 Diagrama de Dispersión</span>
+          </button>
+          <button type="button" class="dash-dropdown-link" onclick="ejecutarAccionMenu('grafico-cluster')">
+            <span>🎯 Gráfico de Clústeres (K-Means)</span>
+          </button>
+          <button type="button" class="dash-dropdown-link" onclick="ejecutarAccionMenu('grafico-boxplot')">
+            <span>📦 Diagrama de Caja y Bigotes (Boxplot)</span>
+          </button>
+          <div class="dash-dropdown-separador"></div>
+          <button type="button" class="dash-dropdown-link" onclick="ejecutarAccionMenu('grafico-histograma')">
+            <span>📊 Histograma de frecuencias</span>
+          </button>
+          <button type="button" class="dash-dropdown-link" onclick="ejecutarAccionMenu('grafico-barras')">
+            <span>📊 Diagrama de Barras</span>
+          </button>
+          <div class="dash-dropdown-separador"></div>
+          <button type="button" class="dash-dropdown-link" onclick="ejecutarAccionMenu('config-graficos')">
+            <span>⚙️ Configurar opciones de gráficos...</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 6. INTERPRETACIÓN -->
+      <div class="dash-menu-item">
+        <button type="button" id="dash-menu-interpretacion" class="dash-menu-link dash-menu-link--activo" onclick="ejecutarAccionMenu('interpretacion')">Interpretación</button>
+      </div>
+
+      <!-- 7. AYUDA -->
+      <div class="dash-menu-item">
+        <button type="button" class="dash-menu-link" onclick="toggleDropdownMenu('menu-ayuda', event)">Ayuda ▾</button>
+        <div id="menu-ayuda" class="dash-dropdown">
+          <button type="button" class="dash-dropdown-link" onclick="ejecutarAccionMenu('ayuda-guia')">
+            <span>📘 Guía rápida de uso</span>
+          </button>
+          <button type="button" class="dash-dropdown-link" onclick="ejecutarAccionMenu('ayuda-acerca')">
+            <span>ℹ️ Acerca de MultiStats (UNA - FIEI)</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Iconos de usuario, alertas y tema -->
+    <div class="dash-header-der">
+      <button type="button" class="dash-icono-btn" title="Perfil de usuario" aria-label="Perfil">
+        <svg class="dash-icono-svg" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </button>
+      <button type="button" class="dash-icono-btn" title="Notificaciones" aria-label="Notificaciones">
+        <svg class="dash-icono-svg" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </button>
+      <button type="button" class="dash-icono-btn" id="dash-btn-tema" title="Cambiar tema" aria-label="Tema">
+        <svg class="dash-icono-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
+    </div>
   </header>
 
   <!-- ==========================================================================
-       [PERSONA 1] - BARRA DE NAVEGACIÓN (TABS / MENÚ)
-       - Convertir estos botones en pestañas modernas tipo tab con iconos.
-       - Añadir estilos de estado activo/hover y transiciones suaves.
-       - NOTA IMPORTANTE: MANTENER los atributos data-seccion="..." exactamente igual.
+       CUERPO PRINCIPAL DEL DASHBOARD (3 COLUMNAS)
        ========================================================================== -->
-  <nav>
-    <button data-seccion="datos">Datos</button>
-    <button data-seccion="estadistica">Estadística</button>
-    <button data-seccion="aprendizaje">Aprendizaje no supervisado</button>
-    <button data-seccion="graficos">Gráficos</button>
-    <button data-seccion="resultados">Resultados</button>
-  </nav>
+  <div class="dash-cuerpo">
+
+    <!-- COLUMNA 1: SIDEBAR IZQUIERDO JERÁRQUICO -->
+    <aside class="dash-sidebar-izq" aria-label="Módulos y métodos">
+
+      <div class="dash-grupo-nav">
+        <div class="dash-grupo-titulo">Preprocesamiento</div>
+        <button type="button" class="dash-item-nav" data-accion="exploracion">
+          <span class="dash-item-check"></span>
+          <span class="dash-item-textos">
+            <span class="dash-item-nombre">Exploración inicial</span>
+          </span>
+        </button>
+        <button type="button" class="dash-item-nav" data-accion="limpieza">
+          <span class="dash-item-check"></span>
+          <span class="dash-item-textos">
+            <span class="dash-item-nombre">Limpieza de datos</span>
+            <span class="dash-item-sub">Valores perdidos: media · mediana · KNN · MICE</span>
+          </span>
+        </button>
+        <button type="button" class="dash-item-nav" data-accion="outliers">
+          <span class="dash-item-check"></span>
+          <span class="dash-item-textos">
+            <span class="dash-item-nombre">Detección de outliers</span>
+            <span class="dash-item-sub">IQR · Z-Score</span>
+          </span>
+        </button>
+        <button type="button" class="dash-item-nav" data-accion="transformaciones">
+          <span class="dash-item-check"></span>
+          <span class="dash-item-textos">
+            <span class="dash-item-nombre">Transformaciones</span>
+          </span>
+        </button>
+        <button type="button" class="dash-item-nav" data-accion="escalamiento">
+          <span class="dash-item-check"></span>
+          <span class="dash-item-textos">
+            <span class="dash-item-nombre">Escalamiento</span>
+          </span>
+        </button>
+      </div>
+
+      <div class="dash-grupo-nav">
+        <div class="dash-grupo-titulo">Clustering</div>
+        <button type="button" class="dash-item-nav dash-item-nav--activo" data-accion="kmeans">
+          <span class="dash-item-check"></span>
+          <span class="dash-item-textos">
+            <span class="dash-item-nombre">K-Means</span>
+          </span>
+        </button>
+        <button type="button" class="dash-item-nav" data-accion="kmedoids">
+          <span class="dash-item-check"></span>
+          <span class="dash-item-textos">
+            <span class="dash-item-nombre">K-Medoids (PAM)</span>
+          </span>
+        </button>
+        <button type="button" class="dash-item-nav" data-accion="jerarquico">
+          <span class="dash-item-check"></span>
+          <span class="dash-item-textos">
+            <span class="dash-item-nombre">Clustering Jerárquico</span>
+          </span>
+        </button>
+      </div>
+
+      <div class="dash-grupo-nav">
+        <div class="dash-grupo-titulo">Análisis Univariado</div>
+        <button type="button" class="dash-item-nav" data-accion="tendencia">
+          <span class="dash-item-check"></span>
+          <span class="dash-item-textos">
+            <span class="dash-item-nombre">Tendencia central</span>
+          </span>
+        </button>
+        <button type="button" class="dash-item-nav" data-accion="dispersion">
+          <span class="dash-item-check"></span>
+          <span class="dash-item-textos">
+            <span class="dash-item-nombre">Dispersión</span>
+          </span>
+        </button>
+        <button type="button" class="dash-item-nav" data-accion="boxplot">
+          <span class="dash-item-check"></span>
+          <span class="dash-item-textos">
+            <span class="dash-item-nombre">Histograma / Boxplot / Densidad</span>
+          </span>
+        </button>
+      </div>
+
+      <div class="dash-grupo-nav">
+        <div class="dash-grupo-titulo">Análisis Multivariado</div>
+        <button type="button" class="dash-item-nav" data-accion="covarianza">
+          <span class="dash-item-check"></span>
+          <span class="dash-item-textos">
+            <span class="dash-item-nombre">Covarianza</span>
+          </span>
+        </button>
+        <button type="button" class="dash-item-nav" data-accion="correlacion">
+          <span class="dash-item-check"></span>
+          <span class="dash-item-textos">
+            <span class="dash-item-nombre">Correlación (Pearson)</span>
+          </span>
+        </button>
+        <button type="button" class="dash-item-nav" data-accion="matriz">
+          <span class="dash-item-check"></span>
+          <span class="dash-item-textos">
+            <span class="dash-item-nombre">Matriz de correlaciones</span>
+          </span>
+        </button>
+        <button type="button" class="dash-item-nav" data-accion="pca">
+          <span class="dash-item-check"></span>
+          <span class="dash-item-textos">
+            <span class="dash-item-nombre">PCA</span>
+          </span>
+        </button>
+      </div>
+
+      <div class="dash-grupo-nav">
+        <div class="dash-grupo-titulo">Interpretación Automática</div>
+        <button type="button" class="dash-item-nav" data-accion="conclusiones">
+          <span class="dash-item-check"></span>
+          <span class="dash-item-textos">
+            <span class="dash-item-nombre">Generador de conclusiones</span>
+          </span>
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- COLUMNA 2: ÁREA CENTRAL PRINCIPAL -->
+    <main class="dash-centro">
+
+      <!-- TARJETA 1: TABLA DE DATOS -->
+      <section class="dash-card-tabla" aria-labelledby="dash-titulo-tabla">
+        <div class="dash-card-header">
+          <h2 class="dash-card-titulo" id="dash-titulo-tabla">Tabla de datos</h2>
+          <div class="dash-card-botones">
+            <button type="button" id="btn-importar" class="dash-btn-outline" aria-label="Importar archivo CSV">Importar CSV</button>
+            <button type="button" id="dash-btn-limpiar" class="dash-btn-outline" onclick="limpiarTablaDatos()">Limpiar</button>
+            <button type="button" id="dash-btn-filtrar" class="dash-btn-outline" onclick="filtrarDatosValidos()">Filtrar</button>
+            <button type="button" id="btn-agregar-fila" class="dash-btn-outline" title="Agregar una fila">+</button>
+            <button type="button" id="btn-agregar-columna" class="dash-btn-outline" title="Agregar una columna">+ Col</button>
+            <button type="button" id="btn-exportar" class="dash-btn-outline" title="Exportar como CSV">CSV</button>
+            <input type="file" id="input-archivo" accept=".csv" hidden>
+          </div>
+        </div>
+
+        <div id="contenedor-tabla" tabindex="0" role="region" aria-label="Hoja de datos"></div>
+      </section>
+
+      <!-- TARJETA 2: VISUALIZACIÓN Y RESOLUCIÓN -->
+      <section class="dash-card-resolucion" aria-labelledby="dash-titulo-resolucion">
+        <!-- Pestañas internas -->
+        <div class="dash-res-tabs" role="tablist">
+          <button type="button" class="dash-res-tab" role="tab" data-tab="dispersion" onclick="cambiarTabResolucion('dispersion', this)">Dispersión</button>
+          <button type="button" class="dash-res-tab" role="tab" data-tab="cluster" onclick="cambiarTabResolucion('cluster', this)">Clúster</button>
+          <button type="button" class="dash-res-tab" role="tab" data-tab="boxplot" onclick="cambiarTabResolucion('boxplot', this)">Boxplot</button>
+          <button type="button" class="dash-res-tab dash-res-tab--activo" role="tab" data-tab="pasos" onclick="cambiarTabResolucion('pasos', this)">Resolución paso a paso</button>
+          <button type="button" class="dash-res-tab" role="tab" data-tab="reporte" onclick="cambiarTabResolucion('reporte', this)">Reporte analítico</button>
+        </div>
+
+        <!-- Barra de filtros y exportación -->
+        <div class="dash-filtro-fila" id="dash-barra-filtros">
+          <div class="dash-filtro-pills">
+            <span class="dash-filtro-etiqueta">Mostrar:</span>
+            <button type="button" class="dash-pill dash-pill--activo" data-filtro="todos" onclick="filtrarPasoAPaso('todos', this)">Todos los pasos</button>
+            <button type="button" class="dash-pill" data-filtro="media" onclick="filtrarPasoAPaso('media', this)">Media</button>
+            <button type="button" class="dash-pill" data-filtro="varianza" onclick="filtrarPasoAPaso('varianza', this)">Varianza</button>
+            <button type="button" class="dash-pill" data-filtro="covarianza" onclick="filtrarPasoAPaso('covarianza', this)">Covarianza</button>
+            <button type="button" class="dash-pill" data-filtro="correlacion" onclick="filtrarPasoAPaso('correlacion', this)">Correlación</button>
+            <button type="button" class="dash-pill" data-filtro="cluster" onclick="filtrarPasoAPaso('cluster', this)">Clúster</button>
+          </div>
+          <div class="dash-export-btns">
+            <button type="button" class="dash-btn-outline" id="dash-export-word">Exportar Word</button>
+            <button type="button" class="dash-btn-export-pdf" id="dash-export-pdf">Exportar PDF</button>
+          </div>
+        </div>
+
+        <!-- Cuadrícula con las 6 Tarjetas de Paso a Paso -->
+        <div id="dash-pasos-grid" class="dash-pasos-grid"></div>
+
+        <!-- Área de gráfico (para cuando se activan los tabs de gráfico) -->
+        <div id="dash-area-grafico" class="dash-graf-contenedor" style="display:none;"></div>
+
+        <!-- Área de reporte analítico (para resultados de Analizar) -->
+        <div id="dash-area-reporte" class="dash-reporte-contenedor" style="display:none;">
+          <div class="res-encabezado-seccion" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid #cfe6e2; padding-bottom:8px;">
+            <h3 style="margin:0; font-size:14px; font-weight:700; color:#005953;">Reporte de Resultados Analíticos</h3>
+            <div class="res-acciones" id="res-acciones" style="display:flex; gap:8px;">
+              <button type="button" id="btn-limpiar-resultados" class="dash-btn-outline" title="Limpiar reporte">Limpiar reporte</button>
+              <button type="button" id="btn-imprimir-resultados" class="dash-btn-outline" title="Imprimir reporte">Imprimir reporte</button>
+            </div>
+          </div>
+          <div id="panel-resultados">
+            <p class="res-vacio-texto">Ejecuta un análisis en el menú <strong>Analizar</strong> para ver los resultados aquí.</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- COLUMNA 3: SIDEBAR DERECHO DE PARÁMETROS E INTERPRETACIÓN -->
+    <aside class="dash-sidebar-der" aria-label="Parámetros e interpretación">
+
+      <!-- TARJETA 1: PANEL DE PARÁMETROS -->
+      <section class="dash-card-params" aria-labelledby="dash-titulo-params">
+        <h3 class="dash-card-titulo" id="dash-titulo-params">Panel de parámetros</h3>
+
+        <div class="dash-campo">
+          <label class="dash-campo-label" for="dash-select-algoritmo">Algoritmo</label>
+          <select id="dash-select-algoritmo" class="dash-select">
+            <option value="kmeans" selected>K-Means</option>
+            <option value="kmedoids">K-Medoids (PAM)</option>
+          </select>
+        </div>
+
+        <div class="dash-campo">
+          <label class="dash-campo-label" for="dash-input-k">Valor de K</label>
+          <div class="dash-input-k-wrapper">
+            <input type="number" id="dash-input-k" class="dash-input-num" value="2" min="1" max="10">
+            <div class="dash-btn-stepper">
+              <button type="button" id="dash-k-up" class="dash-step-btn" title="Aumentar K">▲</button>
+              <button type="button" id="dash-k-down" class="dash-step-btn" title="Disminuir K">▼</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="dash-campo">
+          <label class="dash-campo-label" for="dash-select-distancia">Distancia</label>
+          <select id="dash-select-distancia" class="dash-select">
+            <option value="euclidiana" selected>Euclidiana</option>
+            <option value="manhattan">Manhattan</option>
+            <option value="minkowski">Minkowski</option>
+          </select>
+        </div>
+
+        <div class="dash-campo">
+          <span class="dash-campo-label">Centroides iniciales</span>
+          <div class="dash-toggle-seg">
+            <button type="button" id="dash-centroides-aleatorio" class="dash-toggle-btn dash-toggle-btn--activo">Aleatorio</button>
+            <button type="button" id="dash-centroides-manual" class="dash-toggle-btn">Manual</button>
+          </div>
+        </div>
+
+        <button type="button" id="dash-btn-ejecutar" class="dash-btn-ejecutar">EJECUTAR</button>
+        <button type="button" id="dash-btn-reiniciar" class="dash-btn-reiniciar">REINICIAR</button>
+      </section>
+
+      <!-- TARJETA 2: INTERPRETACIÓN AUTOMÁTICA -->
+      <section class="dash-card-interp" aria-labelledby="dash-titulo-interp">
+        <h3 class="dash-card-titulo" id="dash-titulo-interp">Interpretación automática</h3>
+        <p class="dash-interp-texto" id="dash-interp-cuerpo">
+          Se identificaron 2 clústeres. El Clúster 1 (A, B, C) agrupa estudiantes con menor número de horas de estudio y notas relativamente menores. El Clúster 2 (D, E, F) agrupa estudiantes con mayor número de horas y notas mayores. Correlación positiva muy fuerte (r=0.998).
+        </p>
+      </section>
+
+      <!-- TARJETA 3: ACCIONES RÁPIDAS -->
+      <section class="dash-card-acciones" aria-labelledby="dash-titulo-acciones">
+        <h3 class="dash-card-titulo" id="dash-titulo-acciones">Acciones rápidas</h3>
+        <button type="button" id="dash-export-word-2" class="dash-btn-accion-rapida dash-btn-accion-rapida--secundario">Exportar Word</button>
+        <button type="button" id="dash-export-pdf-2" class="dash-btn-accion-rapida dash-btn-accion-rapida--secundario">Exportar PDF</button>
+        <button type="button" id="dash-generar-informe" class="dash-btn-accion-rapida dash-btn-accion-rapida--primario">Generar informe</button>
+      </section>
+
+    </aside>
+
+  </div>
+
+  <!-- NOTIFICACIÓN FLOTANTE TOAST -->
+  <div id="dash-toast-completado" class="dash-toast-completado" style="display:none;" role="status">
+    <span class="dash-toast-check">✓</span>
+    <span id="dash-toast-texto">Clustering completado en 0.03s</span>
+  </div>
+
+  <!-- BARRA DE ESTADO INFERIOR -->
+  <footer id="dash-footer-estado" class="dash-footer-estado" role="contentinfo">
+    <span class="dash-footer-item">Listo</span> | 
+    <span class="dash-footer-item">6 observaciones</span> | 
+    <span class="dash-footer-item">2 variables</span> | 
+    <span class="dash-footer-item">K=2</span>
+  </footer>
 
   <!-- ==========================================================================
-       [PERSONA 1] - CONTENEDOR PRINCIPAL
-       - Definir max-width, espaciados y estructura responsiva del <main>.
+       MODAL DE HERRAMIENTAS AVANZADAS, ANÁLISIS E INFERENCIA
+       (Permite acceso completo a todos los algoritmos, pruebas y gráficos)
        ========================================================================== -->
-  <main>
-
-    <!-- ========================================================================
-         [PERSONA 2] - HOJA DE CÁLCULO Y GESTIÓN DE DATOS (DATA GRID)
-         - Envolver la tabla en un contenedor moderno con scroll horizontal suave.
-         - Diseñar la barra de botones (toolbar) con iconos y estilos primarios/secundarios.
-         - Convertir el texto de ayuda en un banner informativo sutil.
-         - Diseñar estilos para inputs de celdas, filas pares/impares y estados focus/hover.
-         - NOTA IMPORTANTE: NO TOCAR ni renombrar los IDs:
-           #seccion-datos, #contenedor-tabla, #btn-agregar-fila, #btn-agregar-columna,
-           #btn-importar, #btn-exportar, #input-archivo
-         ======================================================================== -->
-    <section id="seccion-datos">
-      <div class="tabla-cabecera">
-        <h2>Tabla de datos</h2>
-        <div class="botones-tabla tabla-toolbar">
-          <button id="btn-importar" class="tabla-boton tabla-boton--primario">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></svg>
-            Importar CSV
-          </button>
-          <button id="btn-exportar" class="tabla-boton">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v12M7 11l5 5 5-5M4 20h16"/></svg>
-            Exportar CSV
-          </button>
-          <button id="btn-agregar-fila" class="tabla-boton">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-            Agregar fila
-          </button>
-          <button id="btn-agregar-columna" class="tabla-boton">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-            Agregar columna
-          </button>
-          <input type="file" id="input-archivo" accept=".csv" style="display:none">
-        </div>
+  <div id="dash-modal-avanzado" class="dash-modal-overlay" style="display:none;">
+    <div class="dash-modal-contenido" role="dialog" aria-labelledby="dash-modal-titulo">
+      <div class="dash-modal-header">
+        <h3 id="dash-modal-titulo" class="dash-modal-titulo">Herramientas Avanzadas</h3>
+        <button type="button" class="dash-modal-cerrar" onclick="cerrarModalSeccion()" title="Cerrar ventana">×</button>
       </div>
-      <p class="tabla-ayuda">
-        Haz clic en una celda para editarla. Puedes pegar datos copiados desde Excel (Ctrl+V) sobre la tabla.
-      </p>
-      <div id="contenedor-tabla" tabindex="0"></div>
-    </section>
+      <div class="dash-modal-cuerpo">
 
-    <!-- ========================================================================
-         [PERSONA 3] - FORMULARIOS Y CONTROLES DE ESTADÍSTICA
-         - Organizar esta sección en un sistema de Tarjetas (Cards) o Acordeones:
-             * Tarjeta 1: Análisis Univariado y Frecuencias
-             * Tarjeta 2: Multivariado y Matrices
-             * Tarjeta 3: Regresión Lineal (Simple y Múltiple)
-             * Tarjeta 4: Inferencia Estadística y Pruebas t
-         - Diseñar inputs y selects modernos (quitar estilos rígidos del navegador).
-         - Dar estilo atractivo a los selects múltiples (select-matriz, select-x-regmul).
-         - Jerarquía visual para botones (primarios para cálculos clave, secundarios para complementarios).
-         - NOTA IMPORTANTE: MANTENER TODOS LOS IDs intactos (los scripts leen cada uno):
-           #select-variable-univariada, #btn-resumen-univariado, #btn-frecuencias,
-           #select-variable-intervalos, #input-num-intervalos, #btn-intervalos,
-           #select-x-multi, #select-y-multi, #btn-cov-cor, #select-matriz,
-           #btn-matriz-cov, #btn-matriz-cor, #select-x-reg, #select-y-reg,
-           #btn-reg-simple, #select-y-regmul, #select-x-regmul, #btn-reg-multiple,
-           #select-inf-var, #select-nivel, #btn-ic-media, #input-mu0, #btn-t-una-media,
-           #select-grupo1, #select-grupo2, #btn-t-dos-medias, #input-exitos,
-           #input-total, #btn-ic-proporcion, #select-x-pend, #select-y-pend,
-           #btn-prueba-pendiente
-         ======================================================================== -->
-    <section id="seccion-estadistica" style="display:none">
-      <h2>Estadística</h2>
+        <!-- Contenedores con los IDs originales para retrocompatibilidad total -->
+        <span id="hoja-activa" style="display:none;">Datos1</span>
+        <span id="app-estado-datos" style="display:none;"></span>
+        <span id="app-estado-seccion" style="display:none;"></span>
 
-      <!-- Tarjeta / Grupo: Univariado -->
-      <h3>Análisis univariado</h3>
-      <label>Variable:
-        <select id="select-variable-univariada"></select>
-      </label>
-      <button id="btn-resumen-univariado">Resumen completo</button>
-      <button id="btn-frecuencias">Tabla de frecuencias</button>
+        <nav class="nav-barra" style="display:none;" aria-label="Navegación oculta">
+          <button type="button" class="nav-pestana" data-seccion="datos">Datos</button>
+          <button type="button" class="nav-pestana" data-seccion="estadistica">Estadística</button>
+          <button type="button" class="nav-pestana" data-seccion="aprendizaje">Aprendizaje</button>
+          <button type="button" class="nav-pestana" data-seccion="graficos">Gráficos</button>
+          <button type="button" class="nav-pestana" data-seccion="resultados">Resultados</button>
+        </nav>
 
-      <!-- Tarjeta / Grupo: Intervalos -->
-      <h3>Frecuencias por intervalos</h3>
-      <label>Variable:
-        <select id="select-variable-intervalos"></select>
-      </label>
-      <label>N.º intervalos:
-        <input type="number" id="input-num-intervalos" value="5" min="1" style="width:60px">
-      </label>
-      <button id="btn-intervalos">Generar intervalos</button>
+        <section id="seccion-datos" style="display:none;">
+          <p class="tabla-ayuda">Hoja de datos activa.</p>
+        </section>
 
-      <!-- Tarjeta / Grupo: Multivariado -->
-      <h3>Análisis multivariado</h3>
-      <label>Variable X:
-        <select id="select-x-multi"></select>
-      </label>
-      <label>Variable Y:
-        <select id="select-y-multi"></select>
-      </label>
-      <button id="btn-cov-cor">Covarianza y correlación</button>
+        <!-- SECCIÓN ESTADÍSTICA -->
+        <section id="seccion-estadistica" style="display:none;">
+          <h2>Estadística</h2>
+          <div class="est-cuadricula">
+            <details class="est-tarjeta" id="est-tarjeta-univariado" open>
+              <summary class="est-tarjeta-resumen"><span class="est-tarjeta-titulo">Análisis univariado y frecuencias</span></summary>
+              <div class="est-tarjeta-cuerpo">
+                <div class="est-campos">
+                  <label class="est-campo" for="select-variable-univariada">
+                    <span class="est-etiqueta">Variable</span>
+                    <select id="select-variable-univariada"></select>
+                  </label>
+                </div>
+                <div class="est-acciones">
+                  <button type="button" id="btn-resumen-univariado" class="est-btn est-btn--primario">Resumen completo</button>
+                  <button type="button" id="btn-frecuencias" class="est-btn est-btn--secundario">Tabla de frecuencias</button>
+                </div>
+                <div class="est-campos" style="margin-top:10px;">
+                  <label class="est-campo" for="select-variable-intervalos">
+                    <span class="est-etiqueta">Variable numérica</span>
+                    <select id="select-variable-intervalos"></select>
+                  </label>
+                  <label class="est-campo est-campo--corto" for="input-num-intervalos">
+                    <span class="est-etiqueta">Intervalos</span>
+                    <input type="number" id="input-num-intervalos" value="5" min="1">
+                  </label>
+                </div>
+                <div class="est-acciones"><button type="button" id="btn-intervalos" class="est-btn est-btn--primario">Generar intervalos</button></div>
+              </div>
+            </details>
 
-      <!-- Tarjeta / Grupo: Matrices -->
-      <h3>Matrices</h3>
-      <label>Variables (Ctrl+clic):
-        <select id="select-matriz" multiple size="5"></select>
-      </label>
-      <button id="btn-matriz-cov">Matriz de covarianzas</button>
-      <button id="btn-matriz-cor">Matriz de correlaciones</button>
+            <details class="est-tarjeta" id="est-tarjeta-multivariado">
+              <summary class="est-tarjeta-resumen"><span class="est-tarjeta-titulo">Análisis multivariado y matrices</span></summary>
+              <div class="est-tarjeta-cuerpo">
+                <div class="est-campos">
+                  <label class="est-campo" for="select-x-multi"><span class="est-etiqueta">Variable X</span><select id="select-x-multi"></select></label>
+                  <label class="est-campo" for="select-y-multi"><span class="est-etiqueta">Variable Y</span><select id="select-y-multi"></select></label>
+                </div>
+                <div class="est-acciones"><button type="button" id="btn-cov-cor" class="est-btn est-btn--primario">Covarianza y correlación</button></div>
+                <div class="est-campos" style="margin-top:10px;">
+                  <label class="est-campo est-campo--multiple" for="select-matriz">
+                    <span class="est-etiqueta">Variables para matrices</span>
+                    <select id="select-matriz" class="est-multiple" multiple size="4"></select>
+                  </label>
+                </div>
+                <div class="est-acciones">
+                  <button type="button" id="btn-matriz-cor" class="est-btn est-btn--primario">Matriz correlaciones</button>
+                  <button type="button" id="btn-matriz-cov" class="est-btn est-btn--secundario">Matriz covarianzas</button>
+                </div>
+              </div>
+            </details>
 
-      <!-- Tarjeta / Grupo: Regresión Simple -->
-      <h3>Regresión lineal simple</h3>
-      <label>X:
-        <select id="select-x-reg"></select>
-      </label>
-      <label>Y:
-        <select id="select-y-reg"></select>
-      </label>
-      <button id="btn-reg-simple">Regresión simple</button>
+            <details class="est-tarjeta" id="est-tarjeta-regresion">
+              <summary class="est-tarjeta-resumen"><span class="est-tarjeta-titulo">Regresión lineal</span></summary>
+              <div class="est-tarjeta-cuerpo">
+                <div class="est-campos">
+                  <label class="est-campo" for="select-x-reg"><span class="est-etiqueta">Variable X</span><select id="select-x-reg"></select></label>
+                  <label class="est-campo" for="select-y-reg"><span class="est-etiqueta">Variable Y</span><select id="select-y-reg"></select></label>
+                </div>
+                <div class="est-acciones"><button type="button" id="btn-reg-simple" class="est-btn est-btn--primario">Regresión simple</button></div>
+                <div class="est-campos" style="margin-top:10px;">
+                  <label class="est-campo" for="select-y-regmul"><span class="est-etiqueta">Variable Y</span><select id="select-y-regmul"></select></label>
+                  <label class="est-campo est-campo--multiple" for="select-x-regmul">
+                    <span class="est-etiqueta">Variables X</span>
+                    <select id="select-x-regmul" class="est-multiple" multiple size="4"></select>
+                  </label>
+                </div>
+                <div class="est-acciones"><button type="button" id="btn-reg-multiple" class="est-btn est-btn--primario">Regresión múltiple</button></div>
+              </div>
+            </details>
 
-      <!-- Tarjeta / Grupo: Regresión Múltiple -->
-      <h3>Regresión lineal múltiple</h3>
-      <label>Y:
-        <select id="select-y-regmul"></select>
-      </label>
-      <label>Variables X (Ctrl+clic):
-        <select id="select-x-regmul" multiple size="5"></select>
-      </label>
-      <button id="btn-reg-multiple">Regresión múltiple</button>
+            <details class="est-tarjeta" id="est-tarjeta-inferencia">
+              <summary class="est-tarjeta-resumen"><span class="est-tarjeta-titulo">Inferencia e intervalos de confianza</span></summary>
+              <div class="est-tarjeta-cuerpo">
+                <div class="est-campos">
+                  <label class="est-campo" for="select-inf-var"><span class="est-etiqueta">Variable</span><select id="select-inf-var"></select></label>
+                  <label class="est-campo" for="select-nivel"><span class="est-etiqueta">Nivel de confianza</span>
+                    <select id="select-nivel"><option value="0.90">90%</option><option value="0.95" selected>95%</option><option value="0.99">99%</option></select>
+                  </label>
+                  <label class="est-campo est-campo--corto" for="input-mu0"><span class="est-etiqueta">H₀: μ =</span><input type="number" id="input-mu0" value="0"></label>
+                </div>
+                <div class="est-acciones">
+                  <button type="button" id="btn-ic-media" class="est-btn est-btn--primario">IC para la media</button>
+                  <button type="button" id="btn-t-una-media" class="est-btn est-btn--secundario">Prueba t (una media)</button>
+                </div>
+                <div class="est-campos" style="margin-top:10px;">
+                  <label class="est-campo" for="select-grupo1"><span class="est-etiqueta">Grupo 1</span><select id="select-grupo1"></select></label>
+                  <label class="est-campo" for="select-grupo2"><span class="est-etiqueta">Grupo 2</span><select id="select-grupo2"></select></label>
+                </div>
+                <div class="est-acciones"><button type="button" id="btn-t-dos-medias" class="est-btn est-btn--primario">Prueba t (dos medias)</button></div>
+                <div class="est-campos" style="margin-top:10px;">
+                  <label class="est-campo est-campo--corto" for="input-exitos"><span class="est-etiqueta">Éxitos</span><input type="number" id="input-exitos" value="10" min="0"></label>
+                  <label class="est-campo est-campo--corto" for="input-total"><span class="est-etiqueta">Total</span><input type="number" id="input-total" value="20" min="1"></label>
+                </div>
+                <div class="est-acciones"><button type="button" id="btn-ic-proporcion" class="est-btn est-btn--primario">IC para proporción</button></div>
+                <div class="est-campos" style="margin-top:10px;">
+                  <label class="est-campo" for="select-x-pend"><span class="est-etiqueta">Variable X</span><select id="select-x-pend"></select></label>
+                  <label class="est-campo" for="select-y-pend"><span class="est-etiqueta">Variable Y</span><select id="select-y-pend"></select></label>
+                </div>
+                <div class="est-acciones"><button type="button" id="btn-prueba-pendiente" class="est-btn est-btn--primario">Prueba t pendiente</button></div>
+              </div>
+            </details>
+          </div>
+        </section>
 
-      <!-- Tarjeta / Grupo: Inferencia y Pruebas de Hipótesis -->
-      <h3>Inferencia</h3>
-      <label>Variable:
-        <select id="select-inf-var"></select>
-      </label>
-      <label>Nivel de confianza:
-        <select id="select-nivel">
-          <option value="0.90">90%</option>
-          <option value="0.95" selected>95%</option>
-          <option value="0.99">99%</option>
-        </select>
-      </label>
+        <!-- SECCIÓN APRENDIZAJE NO SUPERVISADO -->
+        <section id="seccion-aprendizaje" style="display:none;">
+          <h2>Aprendizaje no supervisado</h2>
+          <div class="apr-panel">
+            <div class="apr-bloque">
+              <label class="apr-campo" for="select-vars-cluster">
+                <span class="apr-etiqueta">Variables numéricas</span>
+                <select id="select-vars-cluster" class="apr-multiple" multiple size="5"></select>
+              </label>
+              <label class="apr-switch" for="check-estandarizar">
+                <input type="checkbox" id="check-estandarizar" class="apr-switch-input" role="switch">
+                <span class="apr-switch-texto"><span class="apr-etiqueta">Estandarizar datos</span></span>
+              </label>
+            </div>
+            <div class="apr-bloque">
+              <label class="apr-etiqueta" for="input-k">Número de clusters (K)</label>
+              <input type="number" id="input-k" value="2" min="1">
+              <label class="apr-etiqueta" for="input-max-iter">Máx. iteraciones</label>
+              <input type="number" id="input-max-iter" value="100" min="1">
+              <label class="apr-etiqueta" for="select-distancia">Métrica de distancia</label>
+              <select id="select-distancia">
+                <option value="euclidiana">Euclidiana</option>
+                <option value="manhattan">Manhattan</option>
+                <option value="minkowski">Minkowski</option>
+              </select>
+              <div id="apr-campo-q">
+                <label class="apr-etiqueta" for="input-q-minkowski">Parámetro q</label>
+                <input type="number" id="input-q-minkowski" value="2" min="1" step="0.5">
+              </div>
+            </div>
+          </div>
+          <div class="apr-ejecutar">
+            <button type="button" id="btn-kmeans" class="apr-btn">Ejecutar K-means</button>
+            <button type="button" id="btn-kmedoids" class="apr-btn">Ejecutar K-medoids</button>
+            <span class="apr-estado" id="apr-estado"></span>
+          </div>
+        </section>
 
-      <div style="margin-top:8px">
-        <button id="btn-ic-media">IC para la media</button>
+        <!-- SECCIÓN GRÁFICOS -->
+        <section id="seccion-graficos" style="display:none;">
+          <h2>Gráficos Exploratorios</h2>
+          <div class="graf-panel">
+            <label class="graf-campo"><span class="graf-campo-etiqueta">Variable</span><select id="select-graf-hist"></select></label>
+            <label class="graf-campo"><span class="graf-campo-etiqueta">Intervalos</span><input type="number" id="input-graf-hist-int" value="5"></label>
+            <button type="button" id="btn-graf-histograma" class="graf-generar">Generar histograma</button>
+          </div>
+          <div class="graf-panel" style="margin-top:10px;">
+            <label class="graf-campo"><span class="graf-campo-etiqueta">Variable barras</span><select id="select-graf-barras"></select></label>
+            <button type="button" id="btn-graf-barras" class="graf-generar">Generar barras</button>
+          </div>
+          <div class="graf-panel" style="margin-top:10px;">
+            <label class="graf-campo"><span class="graf-campo-etiqueta">Variable caja</span><select id="select-graf-caja"></select></label>
+            <button type="button" id="btn-graf-caja" class="graf-generar">Generar caja</button>
+          </div>
+          <div class="graf-panel" style="margin-top:10px;">
+            <label class="graf-campo"><span class="graf-campo-etiqueta">Variable X</span><select id="select-graf-disp-x"></select></label>
+            <label class="graf-campo"><span class="graf-campo-etiqueta">Variable Y</span><select id="select-graf-disp-y"></select></label>
+            <label><input type="checkbox" id="check-graf-recta"> Recta de regresión</label>
+            <button type="button" id="btn-graf-dispersion" class="graf-generar">Generar dispersión</button>
+          </div>
+        </section>
+
+        <!-- SECCIÓN RESULTADOS -->
+        <section id="seccion-resultados" style="display:none;">
+          <div class="res-encabezado-seccion">
+            <h2>Resultados Analíticos</h2>
+          </div>
+          <div id="panel-resultados-modal">
+            <p class="res-vacio-texto">Los resultados se visualizan directamente en la pestaña <strong>Reporte analítico</strong> del Dashboard.</p>
+          </div>
+        </section>
+
       </div>
-
-      <div style="margin-top:8px">
-        <label>H₀: μ = <input type="number" id="input-mu0" value="0" style="width:80px"></label>
-        <button id="btn-t-una-media">Prueba t (una media)</button>
-      </div>
-
-      <div style="margin-top:8px">
-        <label>Grupo 1:
-          <select id="select-grupo1"></select>
-        </label>
-        <label>Grupo 2:
-          <select id="select-grupo2"></select>
-        </label>
-        <button id="btn-t-dos-medias">Prueba t (dos medias)</button>
-      </div>
-
-      <div style="margin-top:8px">
-        <label>Éxitos: <input type="number" id="input-exitos" value="0" style="width:60px"></label>
-        <label>Total: <input type="number" id="input-total" value="1" style="width:60px"></label>
-        <button id="btn-ic-proporcion">IC para proporción</button>
-      </div>
-
-      <div style="margin-top:8px">
-        <label>X:
-          <select id="select-x-pend"></select>
-        </label>
-        <label>Y:
-          <select id="select-y-pend"></select>
-        </label>
-        <button id="btn-prueba-pendiente">Prueba t para pendiente</button>
-      </div>
-    </section>
-
-    <!-- ========================================================================
-         [PERSONA 4] - APRENDIZAJE NO SUPERVISADO (MACHINE LEARNING / CLUSTERING)
-         - Diseñar un panel moderno de configuración de algoritmos:
-             * Columna 1: Selección de variables (select múltiple estilizado)
-             * Columna 2: Hiperparámetros (K, iteraciones, distancia, toggle estandarizar)
-         - Convertir el checkbox en un Toggle Switch moderno.
-         - Diseñar los botones de K-means y K-medoids como tarjetas de ejecución destacadas.
-         - Agregar tooltips de ayuda para explicar parámetros (ej: q en Minkowski).
-         - NOTA IMPORTANTE: MANTENER TODOS LOS IDs intactos:
-           #seccion-aprendizaje, #select-vars-cluster, #input-k, #input-max-iter,
-           #check-estandarizar, #select-distancia, #input-q-minkowski,
-           #btn-kmeans, #btn-kmedoids
-         ======================================================================== -->
-    <section id="seccion-aprendizaje" style="display:none">
-      <h2>Aprendizaje no supervisado</h2>
-
-      <h3>Configuración común</h3>
-      <label>Variables (Ctrl+clic, mínimo 2):
-        <select id="select-vars-cluster" multiple size="6"></select>
-      </label>
-      <br>
-      <label>Número de clusters K:
-        <input type="number" id="input-k" value="2" min="1" style="width:60px">
-      </label>
-      <label>Máx. iteraciones:
-        <input type="number" id="input-max-iter" value="100" min="1" style="width:70px">
-      </label>
-      <br>
-      <label>
-        <input type="checkbox" id="check-estandarizar"> Estandarizar datos (media 0, desviación 1)
-      </label>
-      <br>
-      <label>Tipo de distancia:
-        <select id="select-distancia">
-          <option value="euclidiana">Euclidiana</option>
-          <option value="manhattan">Manhattan</option>
-          <option value="minkowski">Minkowski</option>
-        </select>
-      </label>
-      <label>q (Minkowski):
-        <input type="number" id="input-q-minkowski" value="2" min="1" step="0.5" style="width:60px">
-      </label>
-
-      <h3>Algoritmos</h3>
-      <button id="btn-kmeans">Ejecutar K-means</button>
-      <button id="btn-kmedoids">Ejecutar K-medoids</button>
-
-      <p style="font-size:12px; color:#555; margin-top:10px;">
-        Otros métodos (jerárquico, DBSCAN) pendientes de confirmar con el profesor.
-      </p>
-    </section>
-
-    <!-- ========================================================================
-         [PERSONA 5] - VISUALIZACIÓN Y GENERACIÓN DE GRÁFICOS (DATAVIZ)
-         - Organizar la sección en un catálogo o grid de tipos de gráfico
-           (Histograma, Barras, Caja y Bigotes, Dispersión).
-         - Añadir previews o iconos ilustrativos para cada tipo de gráfico.
-         - Asegurar que los contenedores de los SVGs generados tengan marcos limpios,
-           sombras suaves, fondo blanco y bordes redondeados.
-         - NOTA IMPORTANTE: MANTENER TODOS LOS IDs intactos:
-           #seccion-graficos, #select-graf-hist, #input-graf-hist-int, #btn-graf-histograma,
-           #select-graf-barras, #btn-graf-barras, #select-graf-caja, #btn-graf-caja,
-           #select-graf-disp-x, #select-graf-disp-y, #check-graf-recta, #btn-graf-dispersion
-         ======================================================================== -->
-    <section id="seccion-graficos" style="display:none">
-      <h2>Gráficos</h2>
-
-      <h3>Histograma</h3>
-      <label>Variable:
-        <select id="select-graf-hist"></select>
-      </label>
-      <label>N.º intervalos:
-        <input type="number" id="input-graf-hist-int" value="5" min="1" style="width:60px">
-      </label>
-      <button id="btn-graf-histograma">Generar histograma</button>
-
-      <h3>Gráfico de barras</h3>
-      <label>Variable:
-        <select id="select-graf-barras"></select>
-      </label>
-      <button id="btn-graf-barras">Generar barras</button>
-
-      <h3>Diagrama de caja y bigotes</h3>
-      <label>Variable:
-        <select id="select-graf-caja"></select>
-      </label>
-      <button id="btn-graf-caja">Generar caja</button>
-
-      <h3>Dispersión</h3>
-      <label>X:
-        <select id="select-graf-disp-x"></select>
-      </label>
-      <label>Y:
-        <select id="select-graf-disp-y"></select>
-      </label>
-      <label>
-        <input type="checkbox" id="check-graf-recta"> Incluir recta de regresión
-      </label>
-      <button id="btn-graf-dispersion">Generar dispersión</button>
-
-      <p style="font-size:12px; color:#555; margin-top:10px;">
-        Los gráficos de clusters se generan automáticamente al ejecutar K-means o K-medoids.
-      </p>
-    </section>
-
-    <!-- ========================================================================
-         [PERSONA 6] - PANEL DE RESULTADOS, MÉTRICAS Y NOTIFICACIONES
-         - Transformar esta sección en un Dashboard de Métricas / Reporte analítico.
-         - Diseñar un Empty State atractivo cuando no haya resultados aún
-           (icono/ilustración y mensaje amigable en vez de un simple párrafo).
-         - Estilizar las tablas de resultados (filas alternas, alineación numérica, bordes finos).
-         - Estilizar tarjetas KPI para destacar números clave (Media, R², p-valor).
-         - Añadir botones de utilidad (ej: "Limpiar resultados" o "Imprimir / Exportar reporte").
-         - (Opcional) Contenedor para sistema de notificaciones/Toasts.
-         - NOTA IMPORTANTE: MANTENER el id="seccion-resultados" y id="panel-resultados".
-         ======================================================================== -->
-    <section id="seccion-resultados" style="display:none">
-      <h2>Resultados</h2>
-      <div id="panel-resultados">
-        <p>Aquí se mostrarán los resultados de los análisis.</p>
-      </div>
-    </section>
-
-  </main>
+    </div>
+  </div>
 
   <!-- ==========================================================================
        SCRIPTS DE LA APLICACIÓN
-       (No modificar rutas ni orden de carga para garantizar el correcto funcionamiento)
        ========================================================================== -->
   <script src="js/datos/tabla.js"></script>
   <script src="js/datos/validacion.js"></script>
@@ -373,6 +711,8 @@
   <script src="js/aprendizaje/kmedoids.js"></script>
   <script src="js/graficos/graficos.js"></script>
   <script src="js/resultados/resultados.js"></script>
+  <script src="js/aprendizaje/pasos.js"></script>
   <script src="js/principal.js"></script>
+  <script src="js/base/navegacion.js"></script>
 </body>
 </html>
