@@ -17,6 +17,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/estilos.css">
+  <link rel="stylesheet" href="css/tabla.css">
   <!-- Sugerencia: Modularizar CSS para que cada persona trabaje en su archivo:
   <link rel="stylesheet" href="css/base.css">         <-- Persona 1
   <link rel="stylesheet" href="css/tabla.css">        <-- Persona 2
@@ -71,18 +72,32 @@
            #btn-importar, #btn-exportar, #input-archivo
          ======================================================================== -->
     <section id="seccion-datos">
-      <h2>Datos</h2>
-      <p style="font-size:12px; color:#555;">
+      <div class="tabla-cabecera">
+        <h2>Tabla de datos</h2>
+        <div class="botones-tabla tabla-toolbar">
+          <button id="btn-importar" class="tabla-boton tabla-boton--primario">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></svg>
+            Importar CSV
+          </button>
+          <button id="btn-exportar" class="tabla-boton">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v12M7 11l5 5 5-5M4 20h16"/></svg>
+            Exportar CSV
+          </button>
+          <button id="btn-agregar-fila" class="tabla-boton">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+            Agregar fila
+          </button>
+          <button id="btn-agregar-columna" class="tabla-boton">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+            Agregar columna
+          </button>
+          <input type="file" id="input-archivo" accept=".csv" style="display:none">
+        </div>
+      </div>
+      <p class="tabla-ayuda">
         Haz clic en una celda para editarla. Puedes pegar datos copiados desde Excel (Ctrl+V) sobre la tabla.
       </p>
       <div id="contenedor-tabla" tabindex="0"></div>
-      <div class="botones-tabla">
-        <button id="btn-agregar-fila">Agregar fila</button>
-        <button id="btn-agregar-columna">Agregar columna</button>
-        <button id="btn-importar">Importar CSV</button>
-        <button id="btn-exportar">Exportar CSV</button>
-        <input type="file" id="input-archivo" accept=".csv" style="display:none">
-      </div>
     </section>
 
     <!-- ========================================================================

@@ -1,0 +1,257 @@
+/* Parte 2 - Hoja de cálculo y módulo de datos */
+
+/* shortcut: css/variables.css de Carlos aún no existe, cambiar estos nombres por los suyos cuando lo suba */
+#seccion-datos {
+  --tabla-primario: var(--color-primario, #0b7a75);
+  --tabla-primario-oscuro: var(--color-primario-oscuro, #075e5a);
+  --tabla-suave: var(--color-primario-suave, #e6f5f2);
+  --tabla-hover: var(--color-primario-hover, #cdeae5);
+  --tabla-encabezado: var(--color-gris-claro, #f1f5f9);
+  --tabla-linea: var(--color-gris-borde, #e2e8f0);
+  --tabla-texto: var(--color-texto, #1e293b);
+  --tabla-texto-suave: var(--color-texto-suave, #64748b);
+  --tabla-foco: var(--color-foco, #6366f1);
+  --tabla-info-fondo: var(--color-info-fondo, #eff6ff);
+  --tabla-info-borde: var(--color-info-borde, #bfdbfe);
+  --tabla-info-texto: var(--color-info-texto, #1e40af);
+  --tabla-blanco: var(--color-blanco, #ffffff);
+  --tabla-radio: var(--radio-borde, 8px);
+  --tabla-sombra: var(--sombra-suave, 0 1px 4px rgba(15, 23, 42, 0.08));
+}
+
+/* Barra de título y herramientas */
+.tabla-cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.tabla-cabecera h2 {
+  margin: 0;
+  color: var(--tabla-primario-oscuro);
+  font-size: 16px;
+}
+
+.tabla-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tabla-toolbar .tabla-boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 7px 14px;
+  border: 1px solid var(--tabla-primario);
+  border-radius: var(--tabla-radio);
+  background: var(--tabla-blanco);
+  color: var(--tabla-primario);
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.15s, color 0.15s;
+}
+
+.tabla-toolbar .tabla-boton:hover {
+  background: var(--tabla-suave);
+}
+
+.tabla-toolbar .tabla-boton--primario {
+  background: var(--tabla-primario);
+  color: var(--tabla-blanco);
+}
+
+.tabla-toolbar .tabla-boton--primario:hover {
+  background: var(--tabla-primario-oscuro);
+}
+
+.tabla-toolbar .tabla-boton:focus-visible,
+.tabla-boton-x:focus-visible {
+  outline: 2px solid var(--tabla-foco);
+  outline-offset: 2px;
+}
+
+.tabla-boton svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Banner de ayuda */
+.tabla-ayuda {
+  margin: 0 0 10px;
+  padding: 8px 12px;
+  border: 1px solid var(--tabla-info-borde);
+  border-radius: var(--tabla-radio);
+  background: var(--tabla-info-fondo);
+  color: var(--tabla-info-texto);
+  font-size: 12px;
+}
+
+/* Contenedor con desplazamiento: necesario para que sticky funcione dentro de él */
+#contenedor-tabla {
+  max-height: 60vh;
+  overflow: auto;
+  border: 1px solid var(--tabla-linea);
+  border-radius: var(--tabla-radio);
+  background: var(--tabla-blanco);
+  box-shadow: var(--tabla-sombra);
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--tabla-linea) transparent;
+}
+
+/* separate: con collapse los bordes de las celdas sticky desaparecen al desplazar */
+.tabla-hoja {
+  margin: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  color: var(--tabla-texto);
+}
+
+.tabla-hoja th,
+.tabla-hoja td {
+  padding: 0;
+  border: 0;
+  border-right: 1px solid var(--tabla-linea);
+  border-bottom: 1px solid var(--tabla-linea);
+  font-size: 13px;
+  width: 110px;
+  min-width: 110px;
+}
+
+.tabla-hoja thead {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+/* Encabezados estilo Excel (A, B, C... y 1, 2, 3...) */
+.tabla-hoja .tabla-letra,
+.tabla-hoja .tabla-num {
+  background: var(--tabla-encabezado);
+  color: var(--tabla-texto-suave);
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.tabla-hoja .tabla-letra {
+  padding: 3px 6px;
+}
+
+.tabla-hoja .tabla-num {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  width: 44px;
+  min-width: 44px;
+}
+
+/* Fila con los nombres de variables */
+.tabla-hoja .tabla-variable {
+  background: var(--tabla-primario);
+  color: var(--tabla-blanco);
+  font-weight: 600;
+}
+
+.tabla-variable-contenido {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px 2px 2px;
+}
+
+.tabla-hoja .tabla-variable input {
+  width: 100%;
+  min-width: 0;
+  padding: 6px;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+
+/* Celdas */
+.tabla-hoja tbody td {
+  height: 24px;
+  background: var(--tabla-blanco);
+}
+
+.tabla-hoja tbody tr:hover td {
+  background: var(--tabla-suave);
+}
+
+.tabla-hoja td input {
+  display: block;
+  width: 100%;
+  height: 23px;
+  padding: 0 6px;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font-size: 13px;
+}
+
+/* Como en Excel: números a la derecha, texto a la izquierda */
+.tabla-hoja td input.tabla-celda--num {
+  text-align: right;
+}
+
+.tabla-hoja td:focus-within,
+.tabla-hoja .tabla-variable:focus-within {
+  outline: 2px solid var(--tabla-foco);
+  outline-offset: -2px;
+}
+
+/* Columna de acciones y botones de eliminar */
+.tabla-hoja .tabla-acciones {
+  width: 76px;
+  min-width: 76px;
+  text-align: center;
+}
+
+.tabla-boton-x {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--tabla-texto-suave);
+  font-size: 15px;
+  line-height: 1;
+}
+
+.tabla-boton-x:hover {
+  background: var(--tabla-hover);
+  color: var(--tabla-primario-oscuro);
+}
+
+.tabla-variable .tabla-boton-x {
+  color: inherit;
+}
+
+@media (max-width: 768px) {
+  .tabla-cabecera {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .tabla-hoja th,
+  .tabla-hoja td {
+    min-width: 90px;
+  }
+}
